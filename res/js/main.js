@@ -1,98 +1,140 @@
+// Crete fields
 const createFields = document.querySelector('.create__fields');
-const createShips = document.querySelectorAll('.create__shipBx');
-
-let mousePos = {x: undefined, y: undefined};
-let fieldPos = {x: undefined, y: undefined};
-let newShipPos = {x: undefined, y: undefined};
-let newShipCoords = {x: undefined, y: undefined};
-
-let shipHolding = false;
-let currentShip;
-let fieldsPosition;
-let inFields = false;
 
 for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
         let newField = document.createElement('div');
-        newField.classList.add('create__field');
-
+        newField.classList.add('create__field', 'createField');
         createFields.appendChild(newField);
     }
 }
 
-fieldsPosition = createFields.getBoundingClientRect();
+// MOVE WITH SHIP
+const createShips = document.querySelectorAll('.create__shipBx');
 
+let shipMove = false;
+let currentShipIndex,
+    currentShipInfo,
+    currShipHalfWidth,
+    currShipHalfHeight;
 
+let isShipInField = false;
+
+let mousePos = {x: undefined, y: undefined},
+    fieldShipPos = {x: undefined, y: undefined},
+    fieldShipFinalPos = {x: undefined, y: undefined};
+let createFieldsInfo = createFields.getBoundingClientRect();
+    
+// Get current mouse position
 window.addEventListener('mousemove', (e) => {
     mousePos.x = e.clientX;
     mousePos.y = e.clientY;
 
-    if(shipHolding){
-        createShips[currentShip].style.left = `${mousePos.x}px`;
-        createShips[currentShip].style.top = `${mousePos.y}px`;
-
+    if(shipMove){
+        // Check if a ship is inside create field - left right top bottom
         if(
-            mousePos.x - createShips[currentShip].clientWidth / 2 >= fieldsPosition.left &&
-            mousePos.y + createShips[currentShip].clientHeight / 2 <= fieldsPosition.bottom
+            createFieldsInfo.left <= mousePos.x &&
+            createFieldsInfo.right >= mousePos.x &&
+            createFieldsInfo.top <= mousePos.y &&
+            createFieldsInfo.bottom >= mousePos.y
         ){
-            inFields = true;
+            isShipInField = true;
 
-            fieldPos.x = (mousePos.x - createShips[currentShip].clientWidth / 2) - fieldsPosition.left;
-            fieldPos.y = (mousePos.y - createShips[currentShip].clientHeight / 2) - fieldsPosition.top;
+            // Stick it to the grid
+            let fieldShipPos = {
+                x: mousePos.x - createFieldsInfo.left,
+                y: mousePos.y - createFieldsInfo.top
+            }
 
-            newShipPos.x = fieldsPosition.left + (Math.round(fieldPos.x / 100) * 100) + (createShips[currentShip].clientWidth / 2);
-            newShipPos.y = fieldsPosition.top + (Math.round(fieldPos.y / 100) * 100) + (createShips[currentShip].clientHeight / 2);
+            let fixedFieldShipPos = {
+                x: Math.floor(fieldShipPos.x / 60) * 60,
+                y: Math.max(Math.min((Math.floor((fieldShipPos.y - 60) / 60) * 60), (createFieldsInfo.height - currentShipInfo.height)), 0)
+            }
 
-            createShips[currentShip].style.left = `${newShipPos.x}px`;
-            createShips[currentShip].style.top = `${newShipPos.y}px`;
+            let finalFieldsShipPos = {
+                x: fixedFieldShipPos.x + createFieldsInfo.left,
+                y: fixedFieldShipPos.y + createFieldsInfo.top
+            }
 
-            newShipCoords.x = (newShipPos.x - fieldsPosition.left - createShips[currentShip].clientWidth / 2) / 100;
-            newShipCoords.y = (newShipPos.y - fieldsPosition.top - createShips[currentShip].clientHeight / 2) / 100;
-
-            console.log(newShipCoords);
+            createShips[currentShipIndex].animate(
+                {
+                    left: `${finalFieldsShipPos.x}px`,
+                    top: `${finalFieldsShipPos.y}px`
+                },
+                {
+                    duration: 200,
+                    fill: "forwards"
+                }
+            )
         }
         else{
-            inFields = false;
+            isShipInField = false;
+
+            createShips[currentShipIndex].animate(
+                {
+                    left: `${mousePos.x - currShipHalfWidth}px`,
+                    top: `${mousePos.y - currShipHalfHeight}px`
+                },
+                {
+                    duration: 100,
+                    fill: "forwards"
+                }
+            )
         }
     }
 })
 
+
+// Move with ships
 createShips.forEach((ship, index) => {
     ship.addEventListener('mousedown', () => {
-        shipHolding = true;
-        currentShip = index;
+        shipMove = true;
+        currentShipIndex = index;
 
-        if(
-            mousePos.x - createShips[currentShip].clientWidth / 2 >= fieldsPosition.left &&
-            mousePos.y + createShips[currentShip].clientHeight / 2 <= fieldsPosition.bottom
-        ){
-            inFields = true;
-        }
+        currentShipInfo = ship.getBoundingClientRect();
+        currShipHalfWidth = currentShipInfo.width / 2;
+        currShipHalfHeight = currentShipInfo.height / 2;
     })
 
     ship.addEventListener('mouseup', () => {
-        shipHolding = false;
+        shipMove = false;
 
-        if(!inFields){
-            createShips[currentShip].style.left = `unset`;
-            createShips[currentShip].style.top = `unset`;
+        if(
+            createFieldsInfo.left <= mousePos.x &&
+            createFieldsInfo.right >= mousePos.x &&
+            createFieldsInfo.top <= mousePos.y &&
+            createFieldsInfo.bottom >= mousePos.y
+        ){
+            isShipInField = true;
         }
+        else{
+            isShipInField = false;
 
-        inFields = false;
+            // Move with ship back to their original position
+            createShips[currentShipIndex].animate(
+                {
+                    left: `unset`,
+                    top: `unset`
+                },
+                {
+                    duration: 0,
+                    fill: "forwards"
+                }
+            )
+        }
     })
 })
 
 
 
+// top: 263.5
+// bottom: 803.5
 
-// width: 900
-// height : 900
+// left: 695.328125
+// right: 1235.328125
 
-// top: 0
-// bottom : 900
+// height: 540
+// width: 540
 
-// left: 539
-// right: 1439
-
-// x: 539
-// y: 0
+// x: 695.328125
+// y: 263.5
