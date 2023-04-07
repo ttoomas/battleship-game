@@ -13,7 +13,7 @@ for (let i = 0; i < 9; i++) {
 const createShips = document.querySelectorAll('.create__shipBx');
 
 let shipMove = false;
-let currentShipIndex,
+let currentShipIndex = 0,
     currentShipInfo,
     currShipHalfWidth,
     currShipHalfHeight;
@@ -42,13 +42,13 @@ window.addEventListener('mousemove', (e) => {
 
             // Stick it to the grid
             let fieldShipPos = {
-                x: mousePos.x - createFieldsInfo.left,
-                y: mousePos.y - createFieldsInfo.top
+                x: mousePos.x - createFieldsInfo.left - Math.floor(currShipHalfWidth / 60) * 60,
+                y: mousePos.y - createFieldsInfo.top - Math.floor(currShipHalfHeight / 60) * 60
             }
 
             let fixedFieldShipPos = {
-                x: Math.floor(fieldShipPos.x / 60) * 60,
-                y: Math.max(Math.min((Math.floor((fieldShipPos.y - 60) / 60) * 60), (createFieldsInfo.height - currentShipInfo.height)), 0)
+                x: Math.max(Math.min((Math.floor(fieldShipPos.x / 60) * 60), (createFieldsInfo.width - currentShipInfo.width)), 0),
+                y: Math.max(Math.min((Math.floor(fieldShipPos.y / 60) * 60), (createFieldsInfo.height - currentShipInfo.height)), 0)
             }
 
             let finalFieldsShipPos = {
@@ -66,6 +66,8 @@ window.addEventListener('mousemove', (e) => {
                     fill: "forwards"
                 }
             )
+
+            createShips[currentShipIndex].classList.add('activeSelection');
         }
         else{
             isShipInField = false;
@@ -80,6 +82,8 @@ window.addEventListener('mousemove', (e) => {
                     fill: "forwards"
                 }
             )
+
+            createShips[currentShipIndex].classList.remove('activeSelection');
         }
     }
 })
@@ -89,8 +93,24 @@ window.addEventListener('mousemove', (e) => {
 createShips.forEach((ship, index) => {
     ship.addEventListener('mousedown', () => {
         shipMove = true;
+
+        if(currentShipIndex !== index){
+            createShips[currentShipIndex].classList.remove('activeSelection');
+
+        }
+        
         currentShipIndex = index;
 
+        
+        if(
+            createFieldsInfo.left <= mousePos.x &&
+            createFieldsInfo.right >= mousePos.x &&
+            createFieldsInfo.top <= mousePos.y &&
+            createFieldsInfo.bottom >= mousePos.y
+        ){
+            createShips[currentShipIndex].classList.add('activeSelection');
+        }
+        
         currentShipInfo = ship.getBoundingClientRect();
         currShipHalfWidth = currentShipInfo.width / 2;
         currShipHalfHeight = currentShipInfo.height / 2;
@@ -106,6 +126,8 @@ createShips.forEach((ship, index) => {
             createFieldsInfo.bottom >= mousePos.y
         ){
             isShipInField = true;
+
+            createShips[currentShipIndex].classList.add('activeSelection');
         }
         else{
             isShipInField = false;
@@ -127,14 +149,12 @@ createShips.forEach((ship, index) => {
 
 
 
-// top: 263.5
-// bottom: 803.5
 
-// left: 695.328125
-// right: 1235.328125
+// ROTATE BUTTON
+const createRotateBtn = document.querySelector('.create__rotateBtn');
 
-// height: 540
-// width: 540
-
-// x: 695.328125
-// y: 263.5
+createRotateBtn.addEventListener('click', () => {
+    if(!isShipInField) return;
+    
+    createShips[currentShipIndex].classList.toggle('rotatedShip');
+})

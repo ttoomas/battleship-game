@@ -68,6 +68,9 @@ html{
     justify-content: center;
     z-index: 5;
 }
+.create__shipBx.activeSelection{
+    border: 3px solid white;
+}
 .create__shipImg{
     height: calc(var(--create-size-count) * var(--bx-size));
     width: var(--bx-size);
@@ -128,4 +131,23 @@ html{
 .create__fields{
     display: grid;
     grid-template-columns: repeat(9, 1fr);
+}
+
+
+/* Testing 90deg rotate on carrier */
+.create__shipBx.rotatedShip{
+    width: calc(var(--create-size-count) * var(--bx-size));
+    height: var(--bx-size);
+}
+.create__shipBx.rotatedShip .create__size{
+    grid-template-columns: repeat(var(--create-size-count), var(--bx-size));
+    grid-template-rows: none;
+}
+.create__shipBx.rotatedShip .create__shipImgBx{
+    height: var(--bx-size);
+    width: calc(var(--create-size-count) * var(--bx-size));
+}
+.create__shipBx.rotatedShip .create__shipImg{
+    rotate: 90deg;
+    transform-origin: center center;
 }
