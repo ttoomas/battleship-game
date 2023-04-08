@@ -69,7 +69,8 @@ html{
     z-index: 5;
 }
 .create__shipBx.activeSelection{
-    border: 3px solid white;
+    outline: 6px solid white;
+    outline-offset: -4px;
 }
 .create__shipImg{
     height: calc(var(--create-size-count) * var(--bx-size));
@@ -149,5 +150,4 @@ html{
 }
 .create__shipBx.rotatedShip .create__shipImg{
     rotate: 90deg;
-    transform-origin: center center;
 }

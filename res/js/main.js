@@ -85,6 +85,8 @@ window.addEventListener('mousemove', (e) => {
 
             createShips[currentShipIndex].classList.remove('activeSelection');
         }
+
+        currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
     }
 })
 
@@ -157,4 +159,43 @@ createRotateBtn.addEventListener('click', () => {
     if(!isShipInField) return;
     
     createShips[currentShipIndex].classList.toggle('rotatedShip');
+
+    let currentHalfSize = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
+
+
+    if(createShips[currentShipIndex].classList.contains('rotatedShip')){
+        // Rotated
+
+        let shipRotPos = {
+            x: Math.max(Math.min(currentShipInfo.left - (currentHalfSize * 60), (createFieldsInfo.right - Math.max(currentShipInfo.width, currentShipInfo.height))), createFieldsInfo.left),
+            y: currentShipInfo.top + (currentHalfSize * 60)
+        }
+
+        createShips[currentShipIndex].animate(
+            {
+                left: `${shipRotPos.x}px`,
+                top: `${shipRotPos.y}px`
+            },
+            {
+                duration: 0,
+                fill: "forwards"
+            }
+        )
+    }
+    else{
+        // Original pos
+
+        createShips[currentShipIndex].animate(
+            {
+                left: `${currentShipInfo.left + (currentHalfSize * 60)}px`,
+                top: `${currentShipInfo.top - (currentHalfSize * 60)}px`
+            },
+            {
+                duration: 0,
+                fill: "forwards"
+            }
+        )
+    }
+
+    currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
 })
