@@ -24,6 +24,7 @@ html{
     display: flex;
     flex-direction: row;
     height: 100%;
+    user-select: none;
 }
 .create__shipsContainer{
     width: 30%;
@@ -149,5 +150,13 @@ html{
     width: calc(var(--create-size-count) * var(--bx-size));
 }
 .create__shipBx.rotatedShip .create__shipImg{
+    rotate: 90deg;
+}
+
+
+
+
+.create__shipContainer:nth-of-type(2) .create__shipBx,
+.create__shipContainer:nth-of-type(6) .create__shipBx{
     rotate: 90deg;
 }

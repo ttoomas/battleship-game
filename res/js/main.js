@@ -46,9 +46,13 @@ window.addEventListener('mousemove', (e) => {
                 y: mousePos.y - createFieldsInfo.top - Math.floor(currShipHalfHeight / 60) * 60
             }
 
+            let currentHalfCount;
+                currentShipInfo.width === 60 ? currentHalfCount = 0 : currentHalfCount = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
+            let currentHalfSize = currentHalfCount * 60;
+
             let fixedFieldShipPos = {
-                x: Math.max(Math.min((Math.floor(fieldShipPos.x / 60) * 60), (createFieldsInfo.width - currentShipInfo.width)), 0),
-                y: Math.max(Math.min((Math.floor(fieldShipPos.y / 60) * 60), (createFieldsInfo.height - currentShipInfo.height)), 0)
+                x: Math.max(Math.min((Math.floor(fieldShipPos.x / 60) * 60), (createFieldsInfo.width - currentShipInfo.width + currentHalfSize)), (0 + currentHalfSize)),
+                y: Math.max(Math.min((Math.floor(fieldShipPos.y / 60) * 60), (createFieldsInfo.height - currentShipInfo.height)), (0 - currentHalfSize))
             }
 
             let finalFieldsShipPos = {
@@ -66,6 +70,8 @@ window.addEventListener('mousemove', (e) => {
                     fill: "forwards"
                 }
             )
+
+            createShips[currentShipIndex].style.left = finalFieldsShipPos.y + "px";
 
             createShips[currentShipIndex].classList.add('activeSelection');
         }
@@ -114,8 +120,8 @@ createShips.forEach((ship, index) => {
         }
         
         currentShipInfo = ship.getBoundingClientRect();
-        currShipHalfWidth = currentShipInfo.width / 2;
-        currShipHalfHeight = currentShipInfo.height / 2;
+        currShipHalfWidth = Math.min(currentShipInfo.width / 2, currentShipInfo.height / 2);
+        currShipHalfHeight = Math.max(currentShipInfo.width / 2, currentShipInfo.height / 2);
     })
 
     ship.addEventListener('mouseup', () => {
@@ -134,7 +140,9 @@ createShips.forEach((ship, index) => {
         else{
             isShipInField = false;
 
-            // Move with ship back to their original position
+            // Move with ship back to their original position and reset rotation
+            createShips[currentShipIndex].classList.remove('rotatedShip');
+
             createShips[currentShipIndex].animate(
                 {
                     left: `unset`,
@@ -158,10 +166,21 @@ const createRotateBtn = document.querySelector('.create__rotateBtn');
 createRotateBtn.addEventListener('click', () => {
     if(!isShipInField) return;
     
+
+
+    createShips[currentShipIndex].style.rotate = "90deg";
+    currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
+    currShipHalfWidth = Math.min(currentShipInfo.width / 2, currentShipInfo.height / 2);
+    currShipHalfHeight = Math.max(currentShipInfo.width / 2, currentShipInfo.height / 2);
+
+
+    
+    
+    return;
     createShips[currentShipIndex].classList.toggle('rotatedShip');
-
+    
+    
     let currentHalfSize = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
-
 
     if(createShips[currentShipIndex].classList.contains('rotatedShip')){
         // Rotated
