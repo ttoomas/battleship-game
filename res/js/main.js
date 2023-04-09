@@ -54,10 +54,17 @@ window.addEventListener('mousemove', (e) => {
                 x: Math.max(Math.min((Math.floor(fieldShipPos.x / 60) * 60), (createFieldsInfo.width - currentShipInfo.width + currentHalfSize)), (0 + currentHalfSize)),
                 y: Math.max(Math.min((Math.floor(fieldShipPos.y / 60) * 60), (createFieldsInfo.height - currentShipInfo.height)), (0 - currentHalfSize))
             }
+            
+
+            let helpShipSize = 0;
+
+            if(createShips[currentShipIndex].classList.contains('rotatedShip') && (Math.max(currentShipInfo.width, currentShipInfo.height) / 4) % 2 === 0){
+                helpShipSize = 30;
+            }
 
             let finalFieldsShipPos = {
-                x: fixedFieldShipPos.x + createFieldsInfo.left,
-                y: fixedFieldShipPos.y + createFieldsInfo.top
+                x: fixedFieldShipPos.x + createFieldsInfo.left - helpShipSize,
+                y: fixedFieldShipPos.y + createFieldsInfo.top + helpShipSize
             }
 
             createShips[currentShipIndex].animate(
@@ -167,33 +174,51 @@ createRotateBtn.addEventListener('click', () => {
     if(!isShipInField) return;
     
 
+    createShips[currentShipIndex].classList.toggle('rotatedShip');
 
-    createShips[currentShipIndex].style.rotate = "90deg";
+    let helpShipSize = 0;
+
+    if(createShips[currentShipIndex].classList.contains('rotatedShip')){
+        // Rotate
+        createShips[currentShipIndex].style.rotate = "90deg";
+
+        helpShipSize = 0;
+    }
+    else{
+        // Return
+        createShips[currentShipIndex].style.rotate = "0deg";
+
+        // helpShipSize = 90 -> 2
+        // helpShipSize = 30 -> 1        
+        if(createShips[currentShipIndex].clientHeight === 120){
+            helpShipSize = 30;
+        }
+        else if(createShips[currentShipIndex].clientHeight === 240){
+            helpShipSize = 90;
+        }
+    }
+
     currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
     currShipHalfWidth = Math.min(currentShipInfo.width / 2, currentShipInfo.height / 2);
     currShipHalfHeight = Math.max(currentShipInfo.width / 2, currentShipInfo.height / 2);
 
 
-    
-    
-    return;
-    createShips[currentShipIndex].classList.toggle('rotatedShip');
-    
-    
-    let currentHalfSize = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
+    let currentHalfCount = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
+    let currentHalfSize = currentHalfCount * 60;
+
+    let isOdd = (Math.max(createShips[currentShipIndex].clientWidth, createShips[currentShipIndex].clientHeight) / 4) % 2 === 0 ? 30 : 0;
 
     if(createShips[currentShipIndex].classList.contains('rotatedShip')){
         // Rotated
-
-        let shipRotPos = {
-            x: Math.max(Math.min(currentShipInfo.left - (currentHalfSize * 60), (createFieldsInfo.right - Math.max(currentShipInfo.width, currentShipInfo.height))), createFieldsInfo.left),
-            y: currentShipInfo.top + (currentHalfSize * 60)
+        let newRotatedPos = {
+            x: Math.max(currentShipInfo.left, (createFieldsInfo.left + currentHalfSize - isOdd)), // Left border
+            y: currentShipInfo.top
         }
-
+        
         createShips[currentShipIndex].animate(
             {
-                left: `${shipRotPos.x}px`,
-                top: `${shipRotPos.y}px`
+                left: `${newRotatedPos.x}px`,
+                top: `${newRotatedPos.y}px`
             },
             {
                 duration: 0,
@@ -202,12 +227,16 @@ createRotateBtn.addEventListener('click', () => {
         )
     }
     else{
-        // Original pos
+        // Original
+        let newRotatedPos = {
+            x: currentShipInfo.left + currentHalfSize - isOdd,
+            y: Math.max((currentShipInfo.top - currentHalfSize + isOdd), createFieldsInfo.top)
+        }
 
         createShips[currentShipIndex].animate(
             {
-                left: `${currentShipInfo.left + (currentHalfSize * 60)}px`,
-                top: `${currentShipInfo.top - (currentHalfSize * 60)}px`
+                left: `${newRotatedPos.x}px`,
+                top: `${newRotatedPos.y}px`
             },
             {
                 duration: 0,
@@ -215,6 +244,7 @@ createRotateBtn.addEventListener('click', () => {
             }
         )
     }
+
 
     currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
 })
