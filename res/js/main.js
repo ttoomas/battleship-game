@@ -1,13 +1,21 @@
 // Crete fields
 const createFields = document.querySelector('.create__fields');
+let createFieldBxs = Array.from(Array(9), () => []);
 
 for (let i = 0; i < 9; i++) {
+    let newFieldBx = document.createElement('div');
+    newFieldBx.classList.add('create__fieldContainer');
+    createFields.appendChild(newFieldBx);
+
     for (let j = 0; j < 9; j++) {
         let newField = document.createElement('div');
         newField.classList.add('create__field', 'createField');
-        createFields.appendChild(newField);
+        newFieldBx.appendChild(newField);
+
+        createFieldBxs[i].push(newField);
     }
 }
+
 
 // MOVE WITH SHIP
 const createShips = document.querySelectorAll('.create__shipBx');
@@ -18,7 +26,8 @@ let currentShipIndex = 0,
     currShipHalfWidth,
     currShipHalfHeight;
 
-let isShipInField = false;
+let isShipInField = false,
+    activeMoveShip = false;
 
 let mousePos = {x: undefined, y: undefined},
     fieldShipPos = {x: undefined, y: undefined},
@@ -78,6 +87,12 @@ window.addEventListener('mousemove', (e) => {
                 }
             )
 
+            activeMoveShip = true;
+
+            setTimeout(() => {
+                activeMoveShip = false;
+            }, 200);
+
             createShips[currentShipIndex].style.left = finalFieldsShipPos.y + "px";
 
             createShips[currentShipIndex].classList.add('activeSelection');
@@ -108,6 +123,8 @@ window.addEventListener('mousemove', (e) => {
 createShips.forEach((ship, index) => {
     ship.addEventListener('mousedown', () => {
         shipMove = true;
+
+        checkBorders();
 
         if(currentShipIndex !== index){
             createShips[currentShipIndex].classList.remove('activeSelection');
@@ -161,6 +178,8 @@ createShips.forEach((ship, index) => {
                 }
             )
         }
+
+        checkBorders();
     })
 })
 
@@ -185,8 +204,6 @@ createRotateBtn.addEventListener('click', () => {
 
     if(createShips[currentShipIndex].classList.contains('rotatedShip')){
         // Rotate
-        // createShips[currentShipIndex].style.rotate = "90deg";
-
         createShips[currentShipIndex].animate(
             {
                 rotate: "90deg"
@@ -231,9 +248,6 @@ createRotateBtn.addEventListener('click', () => {
         let currentHalfSize = currentHalfCount * 60;
     
         let isOdd = (Math.max(createShips[currentShipIndex].clientWidth, createShips[currentShipIndex].clientHeight) / 4) % 2 === 0 ? 30 : 0;
-
-        console.log(currentShipInfo.top);
-        console.log(createFieldsInfo.top);
 
         if(
             currentShipInfo.left < createFieldsInfo.left ||
@@ -291,6 +305,52 @@ createRotateBtn.addEventListener('click', () => {
         }
     }, rotateAniDuration);
 })
+
+
+
+// Borders function
+async function checkBorders(){
+    if(!isShipInField) return;
+
+    let gridBackColor = shipMove ? "#0093ff45" : "#ff000045";
+
+    let shipWidthCount = Math.floor(currentShipInfo.width / 60);
+    let shipHeightCount = Math.floor(currentShipInfo.height / 60);
+
+    if(activeMoveShip){
+        await new Promise(r => setTimeout(r, 200));
+    }
+
+    let shipPosGrid = {
+        x: Math.abs(Math.round((currentShipInfo.left - createFieldsInfo.left) / 60) * 60) / 60,
+        y: Math.abs(Math.round((currentShipInfo.top - createFieldsInfo.top) / 60) * 60) / 60
+    }
+
+    if(shipHeightCount > 1){
+        // Non-Rotated
+        // Top and bottom side of non-rotated
+        createFieldBxs[shipPosGrid.y - 1][shipPosGrid.x].style.backgroundColor = gridBackColor;
+        createFieldBxs[shipPosGrid.y + shipHeightCount][shipPosGrid.x].style.backgroundColor = gridBackColor;
+
+        // Left and right side of non-rotated
+        for (let i = 0; i < (shipHeightCount + 2); i++) {
+            createFieldBxs[shipPosGrid.y - 1 + i][shipPosGrid.x - shipWidthCount].style.backgroundColor = gridBackColor;
+            createFieldBxs[shipPosGrid.y - 1 + i][shipPosGrid.x + shipWidthCount].style.backgroundColor = gridBackColor;
+        }
+    }
+    else{
+        // Rotated
+        // Left and right side of rotated
+        createFieldBxs[shipPosGrid.y][shipPosGrid.x - 1].style.backgroundColor = gridBackColor;
+        createFieldBxs[shipPosGrid.y][shipPosGrid.x + shipWidthCount].style.backgroundColor = gridBackColor;
+        
+        // Top and bottom side of rotated
+        for (let i = 0; i < (shipWidthCount + 2); i++) {
+            createFieldBxs[shipPosGrid.y - 1][shipPosGrid.x - 1 + i].style.backgroundColor = gridBackColor;
+            createFieldBxs[shipPosGrid.y + 1][shipPosGrid.x - 1 + i].style.backgroundColor = gridBackColor;
+        }
+    }
+}
 
 
 

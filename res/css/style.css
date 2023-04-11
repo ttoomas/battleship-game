@@ -138,8 +138,12 @@ html{
     border: 1px solid #0077ff;
 }
 .create__fields{
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    display: flex;
+    flex-direction: column;
+}
+.create__fieldContainer{
+    display: flex;
+    flex-direction: row;
 }
 
 
