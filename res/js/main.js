@@ -231,48 +231,79 @@ createRotateBtn.addEventListener('click', () => {
         let currentHalfSize = currentHalfCount * 60;
     
         let isOdd = (Math.max(createShips[currentShipIndex].clientWidth, createShips[currentShipIndex].clientHeight) / 4) % 2 === 0 ? 30 : 0;
-    
-        if(createShips[currentShipIndex].classList.contains('rotatedShip')){
-            // Rotated
-            let newRotatedPos = {
-                x: Math.max(currentShipInfo.left, (createFieldsInfo.left + currentHalfSize - isOdd)), // Left border
-                y: currentShipInfo.top
-            }
-            
-            createShips[currentShipIndex].animate(
-                {
-                    left: `${newRotatedPos.x}px`,
-                    top: `${newRotatedPos.y}px`
-                },
-                {
-                    duration: moveAniDuration,
-                    fill: "forwards"
+
+        console.log(currentShipInfo.top);
+        console.log(createFieldsInfo.top);
+
+        if(
+            currentShipInfo.left < createFieldsInfo.left ||
+            currentShipInfo.right > createFieldsInfo.right ||
+            currentShipInfo.top < createFieldsInfo.top ||
+            currentShipInfo.bottom > createFieldsInfo.bottom ||
+            isOdd !== 0
+        ){
+            if(createShips[currentShipIndex].classList.contains('rotatedShip')){
+                // Rotated
+                let newRotatedPos = {
+                    x: Math.max(currentShipInfo.left, (createFieldsInfo.left + currentHalfSize - isOdd)), // Left border
+                    y: currentShipInfo.top
                 }
-            )
+                
+                createShips[currentShipIndex].animate(
+                    {
+                        left: `${newRotatedPos.x}px`,
+                        top: `${newRotatedPos.y}px`
+                    },
+                    {
+                        duration: moveAniDuration,
+                        fill: "forwards"
+                    }
+                )
+            }
+            else{
+                // Original
+                let newRotatedPos = {
+                    x: currentShipInfo.left + currentHalfSize - isOdd,
+                    y: Math.max((currentShipInfo.top - currentHalfSize + isOdd), createFieldsInfo.top)
+                }
+        
+                createShips[currentShipIndex].animate(
+                    {
+                        left: `${newRotatedPos.x}px`,
+                        top: `${newRotatedPos.y}px`
+                    },
+                    {
+                        duration: moveAniDuration,
+                        fill: "forwards"
+                    }
+                )
+            }
+
+
+            setTimeout(() => {
+                disabledRotateBtn = false;
+    
+                currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
+            }, (moveAniDuration + 50));
         }
         else{
-            // Original
-            let newRotatedPos = {
-                x: currentShipInfo.left + currentHalfSize - isOdd,
-                y: Math.max((currentShipInfo.top - currentHalfSize + isOdd), createFieldsInfo.top)
-            }
-    
-            createShips[currentShipIndex].animate(
-                {
-                    left: `${newRotatedPos.x}px`,
-                    top: `${newRotatedPos.y}px`
-                },
-                {
-                    duration: moveAniDuration,
-                    fill: "forwards"
-                }
-            )
-        }
-
-        setTimeout(() => {
             disabledRotateBtn = false;
-
-            currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
-        }, moveAniDuration);
+        }
     }, rotateAniDuration);
+})
+
+
+
+
+
+// REFRESH SECTION
+const refresh = document.querySelector('.refresh');
+const refreshBtn = document.querySelector('.refresh__btn');
+
+window.addEventListener('resize', () => {
+    // refresh.style.display = "flex";
+})
+
+refreshBtn.addEventListener('click', () => {
+    location.reload();
 })
