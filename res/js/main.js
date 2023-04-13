@@ -1,6 +1,7 @@
 // Crete fields
 const createFields = document.querySelector('.create__fields');
 let createFieldBxs = Array.from(Array(9), () => []);
+let createFieldEach = [];
 
 for (let i = 0; i < 9; i++) {
     let newFieldBx = document.createElement('div');
@@ -13,6 +14,7 @@ for (let i = 0; i < 9; i++) {
         newFieldBx.appendChild(newField);
 
         createFieldBxs[i].push(newField);
+        createFieldEach.push(newField);
     }
 }
 
@@ -84,8 +86,6 @@ window.addEventListener('mousemove', (e) => {
         ){
             isShipInField = true;
 
-            if(activeBorderDel) checkBorders();
-
             // Stick it to the grid
             let fieldShipPos = {
                 x: mousePos.x - createFieldsInfo.left - Math.floor(currShipHalfWidth / 60) * 60,
@@ -122,6 +122,15 @@ window.addEventListener('mousemove', (e) => {
                 y: fixedFieldShipPos.y + createFieldsInfo.top + helpShipSize
             }
 
+            if(
+                (finalFieldsShipPos.x !== currentShipInfo.left && activeBorderDel) ||
+                (finalFieldsShipPos.y !== currentShipInfo.top && activeBorderDel)
+            ){
+                activeBorderDel = false;
+
+                checkBorders();
+            }
+
             createShips[currentShipIndex].animate(
                 {
                     left: `${finalFieldsShipPos.x}px`,
@@ -138,8 +147,6 @@ window.addEventListener('mousemove', (e) => {
             setTimeout(() => {
                 activeMoveShip = false;
             }, 200);
-
-            createShips[currentShipIndex].style.left = finalFieldsShipPos.y + "px";
 
             createShips[currentShipIndex].classList.add('activeSelection');
         }
@@ -358,41 +365,107 @@ createRotateBtn.addEventListener('click', () => {
 async function checkBorders(){
     if(!isShipInField) return;
 
-    let gridBackColor = activeBorderDel && shipMove ? "#0093ff45" : "#ff000045";
 
-    let shipWidthCount = Math.floor(currentShipInfo.width / 60);
-    let shipHeightCount = Math.floor(currentShipInfo.height / 60);
+    if(shipMove){
+        createFieldEach.forEach(field => {
+            let currentShipId = parseInt(field.getAttribute('data-ship-id'));
 
-    let currentHalfCount;
-        currentShipInfo.width === 60 ? currentHalfCount = 0 : currentHalfCount = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
-    let currentHalfSize = currentHalfCount * 60;
-
-    if(activeMoveShip){
-        await new Promise(r => setTimeout(r, 200));
-    }
-
-    if(shipHeightCount > 1){
-        // Non-Rotated
-        // Top and bottom side of non-rotated
-        createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x].style.backgroundColor = gridBackColor;
-        createFieldBxs[shipPositions[currentShipIndex].y + shipHeightCount][shipPositions[currentShipIndex].x].style.backgroundColor = gridBackColor;
-
-        // Left and right side of non-rotated
-        for (let i = 0; i < (shipHeightCount + 2); i++) {
-            createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x - shipWidthCount].style.backgroundColor = gridBackColor;
-            createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x + shipWidthCount].style.backgroundColor = gridBackColor;
-        }
+            if(currentShipId === currentShipIndex){
+                field.removeAttribute('data-ship-id');
+                field.style.backgroundColor = "#0093ff45";
+            }
+        })
     }
     else{
-        // Rotated
-        // Left and right side of rotated
-        createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x - 1].style.backgroundColor = gridBackColor;
-        createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x + shipWidthCount].style.backgroundColor = gridBackColor;
-        
-        // Top and bottom side of rotated
-        for (let i = 0; i < (shipWidthCount + 2); i++) {
-            createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x - 1 + i].style.backgroundColor = gridBackColor;
-            createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].style.backgroundColor = gridBackColor;
+        let gridBackColor = "#ff000045";
+    
+        let shipWidthCount = Math.floor(currentShipInfo.width / 60);
+        let shipHeightCount = Math.floor(currentShipInfo.height / 60);
+    
+        let currentHalfCount;
+            currentShipInfo.width === 60 ? currentHalfCount = 0 : currentHalfCount = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
+        let currentHalfSize = currentHalfCount * 60;
+    
+        if(activeMoveShip){
+            await new Promise(r => setTimeout(r, 200));
+        }
+    
+        if(shipHeightCount > 1){
+            // Non-Rotated
+            // Top and bottom side of non-rotated
+            if(shipPositions[currentShipIndex].y !== 0){
+                createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x].style.backgroundColor = gridBackColor;
+                createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x].setAttribute('data-ship-id', currentShipIndex);
+            }
+
+            if(shipPositions[currentShipIndex].y !== (9 - shipHeightCount)){
+                createFieldBxs[shipPositions[currentShipIndex].y + shipHeightCount][shipPositions[currentShipIndex].x].style.backgroundColor = gridBackColor;
+                createFieldBxs[shipPositions[currentShipIndex].y + shipHeightCount][shipPositions[currentShipIndex].x].setAttribute('data-ship-id', currentShipIndex);
+            }
+
+    
+            // Left and right side of non-rotated
+            if(shipPositions[currentShipIndex].x !== 0){
+                for (let i = 0; i < (shipHeightCount + 2); i++) {
+                    if(
+                        (i === 0 && shipPositions[currentShipIndex].y === 0) ||
+                        (i === (shipHeightCount + 1) && shipPositions[currentShipIndex].y === (9 - shipHeightCount))
+                    ) continue;
+
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x - shipWidthCount].style.backgroundColor = gridBackColor;
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x - shipWidthCount].setAttribute('data-ship-id', currentShipIndex);
+                }
+            }
+
+            if(shipPositions[currentShipIndex].x !== (9 - shipWidthCount)){
+                for (let i = 0; i < (shipHeightCount + 2); i++) {
+                    if(
+                        (i === 0 && shipPositions[currentShipIndex].y === 0) ||
+                        (i === (shipHeightCount + 1) && shipPositions[currentShipIndex].y === (9 - shipHeightCount))
+                    ) continue;
+
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x + shipWidthCount].style.backgroundColor = gridBackColor;
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x + shipWidthCount].setAttribute('data-ship-id', currentShipIndex);
+                }
+            }
+        }
+        else{
+            // Rotated
+            // Left and right side of rotated
+            if(shipPositions[currentShipIndex].x !== 0){
+                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x - 1].style.backgroundColor = gridBackColor;
+                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x - 1].setAttribute('data-ship-id', currentShipIndex);
+            }
+
+            if(shipPositions[currentShipIndex].x !== (9 - shipWidthCount)){
+                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x + shipWidthCount].style.backgroundColor = gridBackColor;
+                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x + shipWidthCount].setAttribute('data-ship-id', currentShipIndex);
+            }
+
+            // Top and bottom side of rotated
+            if(shipPositions[currentShipIndex].y !== 0){
+                for (let i = 0; i < (shipWidthCount + 2); i++) {
+                    if(
+                        (i === 0 && shipPositions[currentShipIndex].x === 0) ||
+                        (i === (shipWidthCount + 1) && shipPositions[currentShipIndex].x === (9 - shipWidthCount))
+                    ) continue
+
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x - 1 + i].style.backgroundColor = gridBackColor;
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x - 1 + i].setAttribute('data-ship-id', currentShipIndex);
+                }
+            }
+
+            if(shipPositions[currentShipIndex].y !== (9 - shipHeightCount)){
+                for (let i = 0; i < (shipWidthCount + 2); i++) {
+                    if(
+                        (i === 0 && shipPositions[currentShipIndex].x === 0) ||
+                        (i === (shipWidthCount + 1) && shipPositions[currentShipIndex].x === (9 - shipWidthCount))
+                    ) continue
+
+                    createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].style.backgroundColor = gridBackColor;
+                    createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].setAttribute('data-ship-id', currentShipIndex);
+                }
+            }
         }
     }
 }
