@@ -30,7 +30,8 @@ let currentShipIndex = 0,
 
 let isShipInField = false,
     activeMoveShip = false,
-    activeBorderDel = false;
+    activeBorderDel = false,
+    deleteCurrentBorder = false;
 
 let mousePos = {x: undefined, y: undefined},
     fieldShipPos = {x: undefined, y: undefined},
@@ -246,6 +247,8 @@ let disabledRotateBtn = false;
 
 createRotateBtn.addEventListener('click', () => {
     if(!isShipInField || disabledRotateBtn) return;
+    deleteCurrentBorder = true;
+    checkBorders();
 
     disabledRotateBtn = true;
 
@@ -348,16 +351,35 @@ createRotateBtn.addEventListener('click', () => {
 
 
             setTimeout(() => {
-                disabledRotateBtn = false;
-    
-                currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
+                rotateBorders();
             }, (moveAniDuration + 50));
         }
         else{
-            disabledRotateBtn = false;
+            rotateBorders();
         }
     }, rotateAniDuration);
 })
+
+
+function rotateBorders(){
+    setTimeout(() => {
+        currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
+    
+        let currPos = {
+            x: Math.floor((currentShipInfo.left - createFieldsInfo.left) / 60),
+            y: Math.floor((currentShipInfo.top - createFieldsInfo.top) / 60)
+        }
+    
+        shipPositions[currentShipIndex].x = currPos.x;
+        shipPositions[currentShipIndex].y = currPos.y;
+    
+    
+        deleteCurrentBorder = false;
+        checkBorders();
+    
+        disabledRotateBtn = false;
+    }, 50);
+}
 
 
 
@@ -365,8 +387,8 @@ createRotateBtn.addEventListener('click', () => {
 async function checkBorders(){
     if(!isShipInField) return;
 
-
-    if(shipMove){
+    
+    if(shipMove || deleteCurrentBorder){
         createFieldEach.forEach(field => {
             let currentShipId = parseInt(field.getAttribute('data-ship-id'));
 
