@@ -43,33 +43,39 @@ let shipPositions = [
     {
         x: 0,
         y: 0,
+        coords: [],
         name: "battleship"
     },
     {
         x: 0,
         y: 0,
+        coords: [],
         name: "carrier"
     },
     {
         x: 0,
         y: 0,
+        coords: [],
         name: "cruiser"
     },
     {
         x: 0,
         y: 0,
+        coords: [],
         name: "destroyer"
     },
     {
         x: 0,
         y: 0,
+        coords: [],
         name: "rescuership"
     },
     {
         x: 0,
         y: 0,
+        coords: [],
         name: "submarine"
-    },
+    }
 ]
     
 // Get current mouse position
@@ -123,6 +129,17 @@ window.addEventListener('mousemove', (e) => {
                 y: fixedFieldShipPos.y + createFieldsInfo.top + helpShipSize
             }
 
+
+            
+            if(
+                finalFieldsShipPos.x !== currentShipInfo.left ||
+                finalFieldsShipPos.y !== currentShipInfo.top
+            ){
+                let isCollision = checkBorderCollision();
+
+                if(isCollision) return;
+            }
+
             if(
                 (finalFieldsShipPos.x !== currentShipInfo.left && activeBorderDel) ||
                 (finalFieldsShipPos.y !== currentShipInfo.top && activeBorderDel)
@@ -172,6 +189,43 @@ window.addEventListener('mousemove', (e) => {
     }
 })
 
+
+// Check border collision
+function checkBorderCollision(){
+    let currentCoords = {x: [], y: []};
+
+    shipPositions.forEach((ship, index) => {
+        if(currentShipIndex === index || !ship.coords.length) return;
+
+        // ship.coords.map(coord => currentCoords.push(coord));
+        ship.coords.map(coord => {if(currentCoords.x.indexOf(coord.x) === -1) currentCoords.x.push(coord.x)});
+        ship.coords.map(coord => {if(currentCoords.y.indexOf(coord.y) === -1) currentCoords.y.push(coord.y)});
+    })
+
+    if(!currentCoords.x.length || !currentCoords.y.length) return;
+
+    let shipWidthCount = Math.floor(currentShipInfo.width / 60);
+    let shipHeightCount = Math.floor(currentShipInfo.height / 60);
+
+    if(
+        // Check top only
+        shipPositions[currentShipIndex].y + shipHeightCount >= currentCoords.y[0] &&
+
+        // Check bottom only
+        shipPositions[currentShipIndex].y <= (currentCoords.y[currentCoords.y.length - 1] + 1) &&
+
+        // Check left only
+        (shipPositions[currentShipIndex].x + shipWidthCount) >= currentCoords.x[0] &&
+
+        // Check right only
+        shipPositions[currentShipIndex].x <= currentCoords.x[0] + 1
+    ){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 
 // Move with ships
 createShips.forEach((ship, index) => {
@@ -254,7 +308,6 @@ createRotateBtn.addEventListener('click', () => {
 
     createShips[currentShipIndex].classList.toggle('rotatedShip');
 
-    let helpShipSize = 0;
     let rotateAniDuration = 250;
     let moveAniDuration = 150;
 
@@ -487,6 +540,24 @@ async function checkBorders(){
                     createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].style.backgroundColor = gridBackColor;
                     createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].setAttribute('data-ship-id', currentShipIndex);
                 }
+            }
+        }
+
+
+        shipPositions[currentShipIndex].coords = [];
+
+        for (let i = 0; i < Math.max(shipWidthCount, shipHeightCount); i++) {
+            if(shipWidthCount < shipHeightCount){
+                shipPositions[currentShipIndex].coords.push({
+                    x: shipPositions[currentShipIndex].x,
+                    y: shipPositions[currentShipIndex].y + i
+                })
+            }
+            else{
+                shipPositions[currentShipIndex].coords.push({
+                    x: shipPositions[currentShipIndex].x + i,
+                    y: shipPositions[currentShipIndex].y
+                })
             }
         }
     }
