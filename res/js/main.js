@@ -189,44 +189,6 @@ window.addEventListener('mousemove', (e) => {
     }
 })
 
-
-// Check border collision
-function checkBorderCollision(){
-    let currentCoords = {x: [], y: []};
-
-    shipPositions.forEach((ship, index) => {
-        if(currentShipIndex === index || !ship.coords.length) return;
-
-        // ship.coords.map(coord => currentCoords.push(coord));
-        ship.coords.map(coord => {if(currentCoords.x.indexOf(coord.x) === -1) currentCoords.x.push(coord.x)});
-        ship.coords.map(coord => {if(currentCoords.y.indexOf(coord.y) === -1) currentCoords.y.push(coord.y)});
-    })
-
-    if(!currentCoords.x.length || !currentCoords.y.length) return;
-
-    let shipWidthCount = Math.floor(currentShipInfo.width / 60);
-    let shipHeightCount = Math.floor(currentShipInfo.height / 60);
-
-    if(
-        // Check top only
-        shipPositions[currentShipIndex].y + shipHeightCount >= currentCoords.y[0] &&
-
-        // Check bottom only
-        shipPositions[currentShipIndex].y <= (currentCoords.y[currentCoords.y.length - 1] + 1) &&
-
-        // Check left only
-        (shipPositions[currentShipIndex].x + shipWidthCount) >= currentCoords.x[0] &&
-
-        // Check right only
-        shipPositions[currentShipIndex].x <= currentCoords.x[0] + 1
-    ){
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
 // Move with ships
 createShips.forEach((ship, index) => {
     ship.addEventListener('mousedown', () => {
@@ -285,9 +247,23 @@ createShips.forEach((ship, index) => {
                     fill: "forwards"
                 }
             )
+
+            createShips[currentShipIndex].animate(
+                {
+                    rotate: "0deg"
+                },
+                {
+                    duration: 0,
+                    fill: "forwards"
+                }
+            )
         }
 
-        checkBorders();
+        let isCollision = checkBorderCollision();
+
+        if(!isCollision){
+            checkBorders();
+        }
     })
 })
 
@@ -434,6 +410,44 @@ function rotateBorders(){
     }, 50);
 }
 
+
+
+// Check border collision
+function checkBorderCollision(){
+    let currentCoords = {x: [], y: []};
+
+    shipPositions.forEach((ship, index) => {
+        if(currentShipIndex === index || !ship.coords.length) return;
+
+        // ship.coords.map(coord => currentCoords.push(coord));
+        ship.coords.map(coord => {if(currentCoords.x.indexOf(coord.x) === -1) currentCoords.x.push(coord.x)});
+        ship.coords.map(coord => {if(currentCoords.y.indexOf(coord.y) === -1) currentCoords.y.push(coord.y)});
+    })
+
+    if(!currentCoords.x.length || !currentCoords.y.length) return;
+
+    let shipWidthCount = Math.floor(currentShipInfo.width / 60);
+    let shipHeightCount = Math.floor(currentShipInfo.height / 60);
+
+    if(
+        // Check top only
+        shipPositions[currentShipIndex].y + shipHeightCount >= currentCoords.y[0] &&
+
+        // Check bottom only
+        shipPositions[currentShipIndex].y <= (currentCoords.y[currentCoords.y.length - 1] + 1) &&
+
+        // Check left only
+        (shipPositions[currentShipIndex].x + shipWidthCount) >= currentCoords.x[0] &&
+
+        // Check right only
+        shipPositions[currentShipIndex].x <= currentCoords.x[0] + currentCoords.x.length
+    ){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 
 
 // Borders function

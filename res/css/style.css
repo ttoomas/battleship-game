@@ -137,6 +137,9 @@ html{
     background-color: #0093ff45;
     border: 1px solid #0077ff;
 }
+.create__field.createField[data-ship-id]{
+    background-color: orange;
+}
 .create__fields{
     display: flex;
     flex-direction: column;
