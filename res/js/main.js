@@ -457,11 +457,33 @@ async function checkBorders(){
     
     if(shipMove || deleteCurrentBorder){
         createFieldEach.forEach(field => {
-            let currentShipId = parseInt(field.getAttribute('data-ship-id'));
+            let currentShipData = field.getAttribute('data-ship-id')
+            
+            if(!currentShipData) return;
+            
+            let currentShipSplited = currentShipData.split(' ');
 
-            if(currentShipId === currentShipIndex){
-                field.removeAttribute('data-ship-id');
-                field.style.backgroundColor = "#0093ff45";
+            if(currentShipSplited.length === 1){
+                let currentShipId = parseInt(currentShipData);
+
+                if(currentShipId === currentShipIndex){
+                    field.removeAttribute('data-ship-id');
+                }
+            }
+            else{
+                currentShipSplited.forEach(currentShipIdData => {
+                    let currentShipId = parseInt(currentShipIdData);
+
+                    if(currentShipId === currentShipIndex){
+
+                        let newArr = currentShipSplited.slice();
+                        let delIndex = newArr.indexOf(currentShipId);
+                        newArr.splice(delIndex, 1);
+                        let newDataShipId = newArr.join(' ');
+
+                        field.setAttribute('data-ship-id', newDataShipId);
+                    }
+                })
             }
         })
     }
@@ -483,13 +505,13 @@ async function checkBorders(){
             // Non-Rotated
             // Top and bottom side of non-rotated
             if(shipPositions[currentShipIndex].y !== 0){
-                createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x].style.backgroundColor = gridBackColor;
-                createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x].setAttribute('data-ship-id', currentShipIndex);
+                let oldAttribute = createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x].getAttribute('data-ship-id');
+                createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x].setAttribute(`data-ship-id`, (`${oldAttribute !== null ? oldAttribute + ' ' : ''}${currentShipIndex}`));
             }
 
             if(shipPositions[currentShipIndex].y !== (9 - shipHeightCount)){
-                createFieldBxs[shipPositions[currentShipIndex].y + shipHeightCount][shipPositions[currentShipIndex].x].style.backgroundColor = gridBackColor;
-                createFieldBxs[shipPositions[currentShipIndex].y + shipHeightCount][shipPositions[currentShipIndex].x].setAttribute('data-ship-id', currentShipIndex);
+                let oldAttribute = createFieldBxs[shipPositions[currentShipIndex].y + shipHeightCount][shipPositions[currentShipIndex].x].getAttribute('data-ship-id');
+                createFieldBxs[shipPositions[currentShipIndex].y + shipHeightCount][shipPositions[currentShipIndex].x].setAttribute(`data-ship-id`, (`${oldAttribute !== null ? oldAttribute + ' ' : ''}${currentShipIndex}`));
             }
 
     
@@ -501,8 +523,8 @@ async function checkBorders(){
                         (i === (shipHeightCount + 1) && shipPositions[currentShipIndex].y === (9 - shipHeightCount))
                     ) continue;
 
-                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x - shipWidthCount].style.backgroundColor = gridBackColor;
-                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x - shipWidthCount].setAttribute('data-ship-id', currentShipIndex);
+                    let oldAttribute = createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x - shipWidthCount].getAttribute('data-ship-id');
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x - shipWidthCount].setAttribute(`data-ship-id`, (`${oldAttribute !== null ? oldAttribute + ' ' : ''}${currentShipIndex}`));
                 }
             }
 
@@ -513,8 +535,8 @@ async function checkBorders(){
                         (i === (shipHeightCount + 1) && shipPositions[currentShipIndex].y === (9 - shipHeightCount))
                     ) continue;
 
-                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x + shipWidthCount].style.backgroundColor = gridBackColor;
-                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x + shipWidthCount].setAttribute('data-ship-id', currentShipIndex);
+                    let oldAttribute = createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x + shipWidthCount].getAttribute('data-ship-id');
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1 + i][shipPositions[currentShipIndex].x + shipWidthCount].setAttribute(`data-ship-id`, (`${oldAttribute !== null ? oldAttribute + ' ' : ''}${currentShipIndex}`));
                 }
             }
         }
@@ -522,13 +544,13 @@ async function checkBorders(){
             // Rotated
             // Left and right side of rotated
             if(shipPositions[currentShipIndex].x !== 0){
-                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x - 1].style.backgroundColor = gridBackColor;
-                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x - 1].setAttribute('data-ship-id', currentShipIndex);
+                let oldAttribute = createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x - 1].getAttribute('data-ship-id');
+                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x - 1].setAttribute(`data-ship-id`, (`${oldAttribute !== null ? oldAttribute + ' ' : ''}${currentShipIndex}`));
             }
 
             if(shipPositions[currentShipIndex].x !== (9 - shipWidthCount)){
-                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x + shipWidthCount].style.backgroundColor = gridBackColor;
-                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x + shipWidthCount].setAttribute('data-ship-id', currentShipIndex);
+                let oldAttribute = createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x + shipWidthCount].getAttribute('data-ship-id');
+                createFieldBxs[shipPositions[currentShipIndex].y][shipPositions[currentShipIndex].x + shipWidthCount].setAttribute(`data-ship-id`, (`${oldAttribute !== null ? oldAttribute + ' ' : ''}${currentShipIndex}`));
             }
 
             // Top and bottom side of rotated
@@ -539,8 +561,8 @@ async function checkBorders(){
                         (i === (shipWidthCount + 1) && shipPositions[currentShipIndex].x === (9 - shipWidthCount))
                     ) continue
 
-                    createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x - 1 + i].style.backgroundColor = gridBackColor;
-                    createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x - 1 + i].setAttribute('data-ship-id', currentShipIndex);
+                    let oldAttribute = createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x - 1 + i].getAttribute('data-ship-id');
+                    createFieldBxs[shipPositions[currentShipIndex].y - 1][shipPositions[currentShipIndex].x - 1 + i].setAttribute(`data-ship-id`, (`${oldAttribute !== null ? oldAttribute + ' ' : ''}${currentShipIndex}`));
                 }
             }
 
@@ -551,8 +573,8 @@ async function checkBorders(){
                         (i === (shipWidthCount + 1) && shipPositions[currentShipIndex].x === (9 - shipWidthCount))
                     ) continue
 
-                    createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].style.backgroundColor = gridBackColor;
-                    createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].setAttribute('data-ship-id', currentShipIndex);
+                    let oldAttribute = createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].getAttribute('data-ship-id');
+                    createFieldBxs[shipPositions[currentShipIndex].y + 1][shipPositions[currentShipIndex].x - 1 + i].setAttribute(`data-ship-id`, (`${oldAttribute !== null ? oldAttribute + ' ' : ''}${currentShipIndex}`));
                 }
             }
         }
