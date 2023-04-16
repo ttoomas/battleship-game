@@ -77,116 +77,147 @@ let shipPositions = [
         name: "submarine"
     }
 ]
+
+let mouseShipPos = [
+    {
+        x: 0,
+        y: 0
+    },
+    {
+        x: 0,
+        y: 0
+    },
+    {
+        x: 0,
+        y: 0
+    },
+    {
+        x: 0,
+        y: 0
+    },
+    {
+        x: 0,
+        y: 0
+    },
+    {
+        x: 0,
+        y: 0
+    }
+]
+
     
 // Get current mouse position
 window.addEventListener('mousemove', (e) => {
     mousePos.x = e.clientX;
     mousePos.y = e.clientY;
 
-    if(shipMove){
-        // Check if a ship is inside create field - left right top bottom
+    if(!shipMove) return;
+
+
+    // Check if a ship is inside create field - left right top bottom
+    if(
+        createFieldsInfo.left <= mousePos.x &&
+        createFieldsInfo.right >= mousePos.x &&
+        createFieldsInfo.top <= mousePos.y &&
+        createFieldsInfo.bottom >= mousePos.y
+    ){
+        isShipInField = true;
+
+        // Stick it to the grid
+        let fieldShipPos = {
+            x: mousePos.x - createFieldsInfo.left - Math.floor(currShipHalfWidth / 60) * 60,
+            y: mousePos.y - createFieldsInfo.top - Math.floor(currShipHalfHeight / 60) * 60
+        }
+
+        let currentHalfCount;
+            currentShipInfo.width === 60 ? currentHalfCount = 0 : currentHalfCount = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
+        let currentHalfSize = currentHalfCount * 60;
+
+        let fixedFieldShipPos = {
+            x: Math.max(Math.min((Math.floor(fieldShipPos.x / 60) * 60), (createFieldsInfo.width - currentShipInfo.width + currentHalfSize)), (0 + currentHalfSize)),
+            y: Math.max(Math.min((Math.floor(fieldShipPos.y / 60) * 60), (createFieldsInfo.height - currentShipInfo.height)), (0 - currentHalfSize))
+        }
+
+
+        let shipPosInGrid = {
+            x: (fixedFieldShipPos.x / 60) - currentHalfCount,
+            y: (fixedFieldShipPos.y / 60) + currentHalfCount
+        }
+        
+        mouseShipPos[currentShipIndex].x = shipPosInGrid.x;
+        mouseShipPos[currentShipIndex].y = shipPosInGrid.y;
+
+
+        let helpShipSize = 0;
+        
+        if(createShips[currentShipIndex].classList.contains('rotatedShip') && (Math.max(currentShipInfo.width, currentShipInfo.height) / 4) % 2 === 0){
+            helpShipSize = 30;
+        }
+
+        let finalFieldsShipPos = {
+            x: fixedFieldShipPos.x + createFieldsInfo.left - helpShipSize,
+            y: fixedFieldShipPos.y + createFieldsInfo.top + helpShipSize
+        }
+
+        
         if(
-            createFieldsInfo.left <= mousePos.x &&
-            createFieldsInfo.right >= mousePos.x &&
-            createFieldsInfo.top <= mousePos.y &&
-            createFieldsInfo.bottom >= mousePos.y
+            finalFieldsShipPos.x !== currentShipInfo.left ||
+            finalFieldsShipPos.y !== currentShipInfo.top
         ){
-            isShipInField = true;
+            let isCollision = checkBorderCollision();
 
-            // Stick it to the grid
-            let fieldShipPos = {
-                x: mousePos.x - createFieldsInfo.left - Math.floor(currShipHalfWidth / 60) * 60,
-                y: mousePos.y - createFieldsInfo.top - Math.floor(currShipHalfHeight / 60) * 60
-            }
-
-            let currentHalfCount;
-                currentShipInfo.width === 60 ? currentHalfCount = 0 : currentHalfCount = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
-            let currentHalfSize = currentHalfCount * 60;
-
-            let fixedFieldShipPos = {
-                x: Math.max(Math.min((Math.floor(fieldShipPos.x / 60) * 60), (createFieldsInfo.width - currentShipInfo.width + currentHalfSize)), (0 + currentHalfSize)),
-                y: Math.max(Math.min((Math.floor(fieldShipPos.y / 60) * 60), (createFieldsInfo.height - currentShipInfo.height)), (0 - currentHalfSize))
-            }
-
-
-            let shipPosInGrid = {
-                x: (fixedFieldShipPos.x / 60) - currentHalfCount,
-                y: (fixedFieldShipPos.y / 60) + currentHalfCount
-            }
-
-            shipPositions[currentShipIndex].x = shipPosInGrid.x;
-            shipPositions[currentShipIndex].y = shipPosInGrid.y;
-            
-
-            let helpShipSize = 0;
-            
-            if(createShips[currentShipIndex].classList.contains('rotatedShip') && (Math.max(currentShipInfo.width, currentShipInfo.height) / 4) % 2 === 0){
-                helpShipSize = 30;
-            }
-
-            let finalFieldsShipPos = {
-                x: fixedFieldShipPos.x + createFieldsInfo.left - helpShipSize,
-                y: fixedFieldShipPos.y + createFieldsInfo.top + helpShipSize
-            }
-
-
-            
-            if(
-                finalFieldsShipPos.x !== currentShipInfo.left ||
-                finalFieldsShipPos.y !== currentShipInfo.top
-            ){
-                let isCollision = checkBorderCollision();
-
-                if(isCollision) return;
-            }
-
-            if(
-                (finalFieldsShipPos.x !== currentShipInfo.left && activeBorderDel) ||
-                (finalFieldsShipPos.y !== currentShipInfo.top && activeBorderDel)
-            ){
-                activeBorderDel = false;
-
-                checkBorders();
-            }
-
-            createShips[currentShipIndex].animate(
-                {
-                    left: `${finalFieldsShipPos.x}px`,
-                    top: `${finalFieldsShipPos.y}px`
-                },
-                {
-                    duration: 200,
-                    fill: "forwards"
-                }
-            )
-
-            activeMoveShip = true;
-
-            setTimeout(() => {
-                activeMoveShip = false;
-            }, 200);
-
-            createShips[currentShipIndex].classList.add('activeSelection');
-        }
-        else{
-            isShipInField = false;
-
-            createShips[currentShipIndex].animate(
-                {
-                    left: `${mousePos.x - currShipHalfWidth}px`,
-                    top: `${mousePos.y - currShipHalfHeight}px`
-                },
-                {
-                    duration: 100,
-                    fill: "forwards"
-                }
-            )
-
-            createShips[currentShipIndex].classList.remove('activeSelection');
+            if(isCollision) return;
         }
 
-        currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
+        shipPositions[currentShipIndex].x = shipPosInGrid.x;
+        shipPositions[currentShipIndex].y = shipPosInGrid.y;
+
+        if(
+            (finalFieldsShipPos.x !== currentShipInfo.left && activeBorderDel) ||
+            (finalFieldsShipPos.y !== currentShipInfo.top && activeBorderDel)
+        ){
+            activeBorderDel = false;
+
+            checkBorders();
+        }
+
+        createShips[currentShipIndex].animate(
+            {
+                left: `${finalFieldsShipPos.x}px`,
+                top: `${finalFieldsShipPos.y}px`
+            },
+            {
+                duration: 200,
+                fill: "forwards"
+            }
+        )
+
+        activeMoveShip = true;
+
+        setTimeout(() => {
+            activeMoveShip = false;
+        }, 200);
+
+        createShips[currentShipIndex].classList.add('activeSelection');
     }
+    else{
+        isShipInField = false;
+
+        createShips[currentShipIndex].animate(
+            {
+                left: `${mousePos.x - currShipHalfWidth}px`,
+                top: `${mousePos.y - currShipHalfHeight}px`
+            },
+            {
+                duration: 100,
+                fill: "forwards"
+            }
+        )
+
+        createShips[currentShipIndex].classList.remove('activeSelection');
+    }
+
+    currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
 })
 
 // Move with ships
@@ -217,58 +248,54 @@ createShips.forEach((ship, index) => {
         currShipHalfHeight = Math.max(currentShipInfo.width / 2, currentShipInfo.height / 2);
     })
 
-    ship.addEventListener('mouseup', () => {
-        shipMove = false;
-        activeBorderDel = false;
-
-        if(
-            createFieldsInfo.left <= mousePos.x &&
-            createFieldsInfo.right >= mousePos.x &&
-            createFieldsInfo.top <= mousePos.y &&
-            createFieldsInfo.bottom >= mousePos.y
-        ){
-            isShipInField = true;
-
-            createShips[currentShipIndex].classList.add('activeSelection');
-        }
-        else{
-            isShipInField = false;
-
-            // Move with ship back to their original position and reset rotation
-            createShips[currentShipIndex].classList.remove('rotatedShip');
-
-            createShips[currentShipIndex].animate(
-                {
-                    left: `unset`,
-                    top: `unset`
-                },
-                {
-                    duration: 0,
-                    fill: "forwards"
-                }
-            )
-
-            createShips[currentShipIndex].animate(
-                {
-                    rotate: "0deg"
-                },
-                {
-                    duration: 0,
-                    fill: "forwards"
-                }
-            )
-        }
-
-        let isCollision = checkBorderCollision();
-
-        console.log(isCollision);
-
-        checkBorders();
-        if(!isCollision){
-        }
-    })
 })
 
+window.addEventListener('mouseup', () => {
+    if(!shipMove) return;
+
+    shipMove = false;
+    activeBorderDel = false;
+
+    if(
+        createFieldsInfo.left <= mousePos.x &&
+        createFieldsInfo.right >= mousePos.x &&
+        createFieldsInfo.top <= mousePos.y &&
+        createFieldsInfo.bottom >= mousePos.y
+    ){
+        isShipInField = true;
+
+        createShips[currentShipIndex].classList.add('activeSelection');
+    }
+    else{
+        isShipInField = false;
+
+        // Move with ship back to their original position and reset rotation
+        createShips[currentShipIndex].classList.remove('rotatedShip');
+
+        createShips[currentShipIndex].animate(
+            {
+                left: `unset`,
+                top: `unset`
+            },
+            {
+                duration: 0,
+                fill: "forwards"
+            }
+        )
+
+        createShips[currentShipIndex].animate(
+            {
+                rotate: "0deg"
+            },
+            {
+                duration: 0,
+                fill: "forwards"
+            }
+        )
+    }
+
+    checkBorders();
+})
 
 
 
@@ -433,16 +460,16 @@ function checkBorderCollision(){
 
     if(
         // Check top only
-        shipPositions[currentShipIndex].y + shipHeightCount >= currentCoords.y[0] &&
+        mouseShipPos[currentShipIndex].y + shipHeightCount >= currentCoords.y[0] &&
 
         // Check bottom only
-        shipPositions[currentShipIndex].y <= (currentCoords.y[currentCoords.y.length - 1] + 1) &&
+        mouseShipPos[currentShipIndex].y <= (currentCoords.y[currentCoords.y.length - 1] + 1) &&
 
         // Check left only
-        (shipPositions[currentShipIndex].x + shipWidthCount) >= currentCoords.x[0] &&
+        (mouseShipPos[currentShipIndex].x + shipWidthCount) >= currentCoords.x[0] &&
 
         // Check right only
-        shipPositions[currentShipIndex].x <= currentCoords.x[0] + currentCoords.x.length
+        mouseShipPos[currentShipIndex].x <= currentCoords.x[0] + currentCoords.x.length
     ){
         return true;
     }
@@ -459,10 +486,10 @@ async function checkBorders(){
     
     if(shipMove || deleteCurrentBorder){
         createFieldEach.forEach(field => {
-            let currentShipData = field.getAttribute('data-ship-id')
+            let currentShipData = field.getAttribute('data-ship-id');
             
             if(!currentShipData) return;
-            
+
             let currentShipSplited = currentShipData.split(' ');
 
             if(currentShipSplited.length === 1){
@@ -477,21 +504,23 @@ async function checkBorders(){
                     let currentShipId = parseInt(currentShipIdData);
 
                     if(currentShipId === currentShipIndex){
-
                         let newArr = currentShipSplited.slice();
-                        let delIndex = newArr.indexOf(currentShipId);
+                        let delIndex = newArr.indexOf(currentShipId.toString());
                         newArr.splice(delIndex, 1);
-                        let newDataShipId = newArr.join(' ');
 
-                        field.setAttribute('data-ship-id', newDataShipId);
+                        if(newArr.length === 1){
+                            field.setAttribute('data-ship-id', newArr[0]);
+                        }
+                        else{
+                            field.setAttribute('data-ship-id', newDataShipId);
+                            let newDataShipId = newArr.join(' ');
+                        }
                     }
                 })
             }
         })
     }
     else{
-        console.log('its here, right?');
-
         let shipWidthCount = Math.floor(currentShipInfo.width / 60);
         let shipHeightCount = Math.floor(currentShipInfo.height / 60);
     
