@@ -266,33 +266,7 @@ window.addEventListener('mouseup', () => {
 
         createShips[currentShipIndex].classList.add('activeSelection');
     }
-    else{
-        isShipInField = false;
-
-        // Move with ship back to their original position and reset rotation
-        createShips[currentShipIndex].classList.remove('rotatedShip');
-
-        createShips[currentShipIndex].animate(
-            {
-                left: `unset`,
-                top: `unset`
-            },
-            {
-                duration: 0,
-                fill: "forwards"
-            }
-        )
-
-        createShips[currentShipIndex].animate(
-            {
-                rotate: "0deg"
-            },
-            {
-                duration: 0,
-                fill: "forwards"
-            }
-        )
-    }
+    else resetShipPosition();
 
     checkBorders();
 })
@@ -430,11 +404,17 @@ function rotateBorders(){
     
         shipPositions[currentShipIndex].x = currPos.x;
         shipPositions[currentShipIndex].y = currPos.y;
-    
-    
+        
+        mouseShipPos[currentShipIndex].x = currPos.x;
+        mouseShipPos[currentShipIndex].y = currPos.y;
+
+        let isCollision = checkBorderCollision();
+        
         deleteCurrentBorder = false;
-        checkBorders();
-    
+
+        if(isCollision) resetShipPosition();
+        else checkBorders();
+
         disabledRotateBtn = false;
     }, 50);
 }
@@ -446,14 +426,14 @@ function checkBorderCollision(){
     let currentCoords = {x: [], y: []};
 
     shipPositions.forEach((ship, index) => {
-        if(currentShipIndex === index || !ship.coords.length) return;
+        if(currentShipIndex === index || !ship.coords.length) return false;
 
         // ship.coords.map(coord => currentCoords.push(coord));
         ship.coords.map(coord => {if(currentCoords.x.indexOf(coord.x) === -1) currentCoords.x.push(coord.x)});
         ship.coords.map(coord => {if(currentCoords.y.indexOf(coord.y) === -1) currentCoords.y.push(coord.y)});
     })
 
-    if(!currentCoords.x.length || !currentCoords.y.length) return;
+    if(!currentCoords.x.length || !currentCoords.y.length) return false;
 
     let shipWidthCount = Math.floor(currentShipInfo.width / 60);
     let shipHeightCount = Math.floor(currentShipInfo.height / 60);
@@ -512,8 +492,8 @@ async function checkBorders(){
                             field.setAttribute('data-ship-id', newArr[0]);
                         }
                         else{
-                            field.setAttribute('data-ship-id', newDataShipId);
                             let newDataShipId = newArr.join(' ');
+                            field.setAttribute('data-ship-id', newDataShipId);
                         }
                     }
                 })
@@ -708,6 +688,40 @@ async function checkBorders(){
             }
         }
     }
+}
+
+
+// Reset ship position to its original position out of field
+function resetShipPosition(){
+    shipMove = false;
+    activeBorderDel = false;
+    isShipInField = false;
+
+    createShips[currentShipIndex].classList.remove('activeSelection');
+
+    // Move with ship back to their original position and reset rotation
+    createShips[currentShipIndex].classList.remove('rotatedShip');
+
+    createShips[currentShipIndex].animate(
+        {
+            left: `unset`,
+            top: `unset`
+        },
+        {
+            duration: 0,
+            fill: "forwards"
+        }
+    )
+
+    createShips[currentShipIndex].animate(
+        {
+            rotate: "0deg"
+        },
+        {
+            duration: 0,
+            fill: "forwards"
+        }
+    )
 }
 
 
