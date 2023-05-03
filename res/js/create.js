@@ -126,6 +126,11 @@ window.addEventListener('mousemove', (e) => {
             y: fixedFieldShipPos.y + createFieldsInfo.top + helpShipSize
         }
 
+        let oldShipPos = {
+            x: shipPositions[currentShipIndex].x,
+            y: shipPositions[currentShipIndex].y,
+        }
+
         shipPositions[currentShipIndex].x = shipPosInGrid.x;
         shipPositions[currentShipIndex].y = shipPosInGrid.y;
 
@@ -137,7 +142,12 @@ window.addEventListener('mousemove', (e) => {
 
             let isCollision = checkBorderCollision();
 
-            if(isCollision) return;
+            if(isCollision){
+                shipPositions[currentShipIndex].x = oldShipPos.x
+                shipPositions[currentShipIndex].y = oldShipPos.y
+                
+                return;
+            }
         }
 
         shipPositions[currentShipIndex].coords = currShipAllPos;
@@ -171,7 +181,12 @@ window.addEventListener('mousemove', (e) => {
         createShips[currentShipIndex].classList.add('activeSelection');
     }
     else{
+        if(isShipInField){
+            deleteBorders();
+        }
+        
         isShipInField = false;
+
 
         createShips[currentShipIndex].animate(
             {
@@ -410,7 +425,10 @@ function rotateBorders(){
         mouseShipPos[currentShipIndex].y = currPos.y;
 
         let isCollision = checkBorderCollision();
-        
+
+        updateShipCoords();
+        shipPositions[currentShipIndex].coords = currShipAllPos;
+
         deleteCurrentBorder = false;
 
         if(isCollision) resetShipPosition();
@@ -436,10 +454,6 @@ function checkBorderCollision(){
 
     if(!currentCoords.length) return false;
 
-    currentCoords.forEach(coord => {
-        createFieldBxs[coord.y][coord.x].style.backgroundColor = "orange";
-    })
-
     setBordersAndPos();
 
     currShipAllPos.map(coord => currentShipPosition.push(coord));
@@ -459,45 +473,6 @@ function checkBorderCollision(){
 
     if(isColl) return true;
     else return false;
-
-    currentShipPosition.forEach(shiPos => {
-        if(isColl) return true;
-
-        let shiPosString = JSON.stringify(shiPos);
-
-        currentCoords.forEach(coord => {
-            if(shiPosString === JSON.stringify(coord)){
-                isColl = true;
-                return;
-            }
-        })
-    })
-
-    if(isColl) return true;
-    else return false;
-
-
-    let shipWidthCount = Math.floor(currentShipInfo.width / 60);
-    let shipHeightCount = Math.floor(currentShipInfo.height / 60);
-    
-    // if(
-    //     // Check top only
-    //     mouseShipPos[currentShipIndex].y + shipHeightCount >= currentCoords.y[0] &&
-
-    //     // Check bottom only
-    //     mouseShipPos[currentShipIndex].y <= (currentCoords.y[currentCoords.y.length - 1] + 1) &&
-
-    //     // Check left only
-    //     (mouseShipPos[currentShipIndex].x + shipWidthCount) >= currentCoords.x[0] &&
-
-    //     // Check right only
-    //     mouseShipPos[currentShipIndex].x <= currentCoords.x[0] + currentCoords.x.length
-    // ){
-    //     return true;
-    // }
-    // else{
-    //     return false;
-    // }
 }
 
 
@@ -543,13 +518,6 @@ async function checkBorders(){
         })
     }
     else{
-        let shipWidthCount = Math.floor(currentShipInfo.width / 60);
-        let shipHeightCount = Math.floor(currentShipInfo.height / 60);
-    
-        let currentHalfCount;
-            currentShipInfo.width === 60 ? currentHalfCount = 0 : currentHalfCount = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
-        
-        
         if(activeMoveShip){
             await new Promise(r => setTimeout(r, 200));
         }
@@ -755,6 +723,51 @@ function setBordersAndPos(type){
             }
         }
     }
+}
+
+
+// Delete all current borders
+function deleteBorders(){
+    let dataFields = [];
+
+    createFieldEach.forEach(field => {
+        let currentShipData = field.getAttribute('data-ship-id');
+
+        if(currentShipData) dataFields.push({field: field, data: currentShipData});
+    })
+
+    if(!dataFields.length) return;
+
+    dataFields.forEach(fieldData => {
+        let currentShipSplited = fieldData.data.split(' ');
+    
+        if(currentShipSplited.length === 1){
+            let currentShipId = parseInt(fieldData.data);
+    
+            if(currentShipId === currentShipIndex){
+                fieldData.field.removeAttribute('data-ship-id');
+            }
+        }
+        else{
+            currentShipSplited.forEach(currentShipIdData => {
+                let currentShipId = parseInt(currentShipIdData);
+    
+                if(currentShipId === currentShipIndex){
+                    let newArr = currentShipSplited.slice();
+                    let delIndex = newArr.indexOf(currentShipId.toString());
+                    newArr.splice(delIndex, 1);
+    
+                    if(newArr.length === 1){
+                        fieldData.field.setAttribute('data-ship-id', newArr[0]);
+                    }
+                    else{
+                        let newDataShipId = newArr.join(' ');
+                        fieldData.field.setAttribute('data-ship-id', newDataShipId);
+                    }
+                }
+            })
+        }
+    })
 }
 
 
