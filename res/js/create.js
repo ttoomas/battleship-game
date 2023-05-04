@@ -88,6 +88,10 @@ window.addEventListener('mousemove', (e) => {
         createFieldsInfo.top <= mousePos.y &&
         createFieldsInfo.bottom >= mousePos.y
     ){
+        let isFirst = false;
+        
+        if(!isShipInField) isFirst = true;
+
         isShipInField = true;
 
         // Stick it to the grid
@@ -142,13 +146,16 @@ window.addEventListener('mousemove', (e) => {
 
             let isCollision = checkBorderCollision();
 
+
             if(isCollision){
-                shipPositions[currentShipIndex].x = oldShipPos.x
-                shipPositions[currentShipIndex].y = oldShipPos.y
+                if(!isFirst){
+                    shipPositions[currentShipIndex].x = oldShipPos.x
+                    shipPositions[currentShipIndex].y = oldShipPos.y
+                }
                 
                 return;
             }
-        }
+         }
 
         shipPositions[currentShipIndex].coords = currShipAllPos;
 
@@ -243,6 +250,7 @@ window.addEventListener('mouseup', () => {
 
     let isCollision = checkBorderCollision();
 
+    //  || (!isCollision && shipPositions[currentShipIndex].x === 0 && shipPositions[currentShipIndex].y === 0)
     if(isCollision){
         resetShipPosition();
         deleteBorders();
