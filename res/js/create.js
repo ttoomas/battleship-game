@@ -241,6 +241,15 @@ window.addEventListener('mouseup', () => {
     shipMove = false;
     activeBorderDel = false;
 
+    let isCollision = checkBorderCollision();
+
+    if(isCollision){
+        resetShipPosition();
+        deleteBorders();
+        
+        return;
+    }
+
     if(
         createFieldsInfo.left <= mousePos.x &&
         createFieldsInfo.right >= mousePos.x &&
