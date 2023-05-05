@@ -2,7 +2,7 @@ import { shipPositions } from "./gameSetting.js";
 
 // Crete fields
 const createFields = document.querySelector('.create__fields');
-let createFieldBxs = Array.from(Array(9), () => []);
+export let createFieldBxs = Array.from(Array(9), () => []);
 let createFieldEach = [];
 
 for (let i = 0; i < 9; i++) {
