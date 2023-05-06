@@ -1,42 +1,42 @@
 export let shipPositions = [
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "battleship",
         size: 4
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "carrier",
         size: 3
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "cruiser",
         size: 2
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "destroyer",
         size: 3
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "rescuership",
         size: 4
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "submarine",
         size: 5
@@ -45,43 +45,43 @@ export let shipPositions = [
 
 export let botShipPositions = [
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "battleship",
         size: 4
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "carrier",
         size: 3
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "cruiser",
         size: 2
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "destroyer",
         size: 3
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "rescuership",
         size: 4
     },
     {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         coords: [],
         name: "submarine",
         size: 5

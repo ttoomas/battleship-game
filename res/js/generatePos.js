@@ -1,3 +1,4 @@
+import { createFieldBxs } from "./create.js";
 import { shipPositions } from "./gameSetting.js";
 
 
@@ -37,7 +38,8 @@ export function generateShipPosition(){
 
                 shipRandomCoords[index].position = {x: undefined, y: undefined};
                 shipRandomCoords[index].coords = [];
-    
+
+                
                 do {
                     genShipPos = {
                         x: randomNum(0, 8),
@@ -72,16 +74,17 @@ export function generateShipPosition(){
                     }
                 }
 
-                setBordersAndPos(rotated, rotX, rotY, genShipPos, index);
+                genSetBordersAndPos(rotated, rotX, rotY, genShipPos);
                 isColl = checkBorderCollision(rotated, rotX, rotY, genShipPos, index);
     
                 if(currentAttempt >= 10){
                     breaked = true;
+                    
                     break;
                 }
             } while (isColl);
         }
-    } while (breaked)
+    } while (breaked);
 
     
     // Show it on field
@@ -106,7 +109,7 @@ function checkBorderCollision(rotated, rotX, rotY, position, currentShipIndex){
 
     if(!currentCoords.length) return false;
 
-    setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex);
+    genSetBordersAndPos(rotated, rotX, rotY, position);
 
     currShipAllPos = shipRandomCoords[currentShipIndex].coords;
     currShipAllPos.map(coord => currentShipPosition.push(coord));
@@ -129,21 +132,52 @@ function checkBorderCollision(rotated, rotX, rotY, position, currentShipIndex){
 }
 
 // Set borders
-function setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex, type){
+export function genSetBordersAndPos(rotated, rotX, rotY, position, shipIndex, type){
     currentShipPosition = [];
 
     let shipWidthCount = rotX;
     let shipHeightCount = rotY;
+    let currentShipIndex = shipIndex;
 
     if(!rotated){
         // Non-Rotated
         // Top and bottom side of non-rotated
         if(position.y !== 0){
+            let oldAttribute = createFieldBxs[position.y - 1][position.x].getAttribute('data-ship-id');
+
             currentShipPosition.push({x: position.x, y: position.y - 1});
+
+            if(type === "borders"){
+                if(oldAttribute !== null){
+                    let splitedAttr = oldAttribute.split(' ');
+
+                    if(!splitedAttr.includes(currentShipIndex.toString())){
+                        createFieldBxs[position.y - 1][position.x].setAttribute(`data-ship-id`, (`${oldAttribute} ${currentShipIndex}`));
+                    }
+                }
+                else{
+                    createFieldBxs[position.y - 1][position.x].setAttribute(`data-ship-id`, (currentShipIndex));
+                }
+            }
         }
 
         if(position.y !== (9 - shipHeightCount)){
+            let oldAttribute = createFieldBxs[position.y + shipHeightCount][position.x].getAttribute('data-ship-id');
+
             currentShipPosition.push({x: position.x, y: position.y + shipHeightCount});
+
+            if(type === "borders"){
+                if(oldAttribute !== null){
+                    let splitedAttr = oldAttribute.split(' ');
+
+                    if(!splitedAttr.includes(currentShipIndex.toString())){
+                        createFieldBxs[position.y + shipHeightCount][position.x].setAttribute(`data-ship-id`, (`${oldAttribute} ${currentShipIndex}`));
+                    }
+                }
+                else{
+                    createFieldBxs[position.y + shipHeightCount][position.x].setAttribute(`data-ship-id`, (currentShipIndex));
+                }
+            }
         }
 
 
@@ -156,6 +190,21 @@ function setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex, type)
                 ) continue;
 
                 currentShipPosition.push({x: position.x - shipWidthCount, y: position.y - 1 + i});
+
+                if(type === "borders"){
+                    let oldAttribute = createFieldBxs[position.y - 1 + i][position.x - shipWidthCount].getAttribute('data-ship-id');
+
+                    if(oldAttribute !== null){
+                        let splitedAttr = oldAttribute.split(' ');
+
+                        if(!splitedAttr.includes(currentShipIndex.toString())){
+                            createFieldBxs[position.y - 1 + i][position.x - shipWidthCount].setAttribute(`data-ship-id`, (`${oldAttribute} ${currentShipIndex}`));
+                        }
+                    }
+                    else{
+                        createFieldBxs[position.y - 1 + i][position.x - shipWidthCount].setAttribute(`data-ship-id`, (currentShipIndex));
+                    }
+                }
             }
         }
 
@@ -167,6 +216,21 @@ function setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex, type)
                 ) continue;
 
                 currentShipPosition.push({x: position.x + shipWidthCount, y: position.y - 1 + i});
+
+                if(type === "borders"){
+                    let oldAttribute = createFieldBxs[position.y - 1 + i][position.x + shipWidthCount].getAttribute('data-ship-id');
+
+                    if(oldAttribute !== null){
+                        let splitedAttr = oldAttribute.split(' ');
+
+                        if(!splitedAttr.includes(currentShipIndex.toString())){
+                            createFieldBxs[position.y - 1 + i][position.x + shipWidthCount].setAttribute(`data-ship-id`, (`${oldAttribute} ${currentShipIndex}`));
+                        }
+                    }
+                    else{
+                        createFieldBxs[position.y - 1 + i][position.x + shipWidthCount].setAttribute(`data-ship-id`, (currentShipIndex));
+                    }
+                }
             }
         }
     }
@@ -174,11 +238,41 @@ function setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex, type)
         // Rotated
         // Left and right side of rotated
         if(position.x !== 0){
+            let oldAttribute = createFieldBxs[position.y][position.x - 1].getAttribute('data-ship-id');
+
             currentShipPosition.push({x: position.x - 1, y: position.y});
+
+            if(type === "borders"){
+                if(oldAttribute !== null){
+                    let splitedAttr = oldAttribute.split(' ');
+
+                    if(!splitedAttr.includes(currentShipIndex.toString())){
+                        createFieldBxs[position.y][position.x - 1].setAttribute(`data-ship-id`, (`${oldAttribute} ${currentShipIndex}`));
+                    }
+                }
+                else{
+                    createFieldBxs[position.y][position.x - 1].setAttribute(`data-ship-id`, (currentShipIndex));
+                }
+            }
         }
 
         if(position.x !== (9 - shipWidthCount)){
+            let oldAttribute = createFieldBxs[position.y][position.x + shipWidthCount].getAttribute('data-ship-id');
+
             currentShipPosition.push({x: position.x + shipWidthCount, y: position.y});
+
+            if(type === "borders"){
+                if(oldAttribute !== null){
+                    let splitedAttr = oldAttribute.split(' ');
+
+                    if(!splitedAttr.includes(currentShipIndex.toString())){
+                        createFieldBxs[position.y][position.x + shipWidthCount].setAttribute(`data-ship-id`, (`${oldAttribute} ${currentShipIndex}`));
+                    }
+                }
+                else{
+                    createFieldBxs[position.y][position.x + shipWidthCount].setAttribute(`data-ship-id`, (currentShipIndex));
+                }
+            }
         }
 
         // Top and bottom side of rotated
@@ -190,6 +284,21 @@ function setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex, type)
                 ) continue;
 
                 currentShipPosition.push({x: position.x - 1 + i, y: position.y - 1});
+
+                if(type === "borders"){
+                    let oldAttribute = createFieldBxs[position.y - 1][position.x - 1 + i].getAttribute('data-ship-id');
+
+                    if(oldAttribute !== null){
+                        let splitedAttr = oldAttribute.split(' ');
+
+                        if(!splitedAttr.includes(currentShipIndex.toString())){
+                            createFieldBxs[position.y - 1][position.x - 1 + i].setAttribute(`data-ship-id`, (`${oldAttribute} ${currentShipIndex}`));
+                        }
+                    }
+                    else{
+                        createFieldBxs[position.y - 1][position.x - 1 + i].setAttribute(`data-ship-id`, (currentShipIndex));
+                    }
+                }
             }
         }
 
@@ -201,6 +310,21 @@ function setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex, type)
                 ) continue;
 
                 currentShipPosition.push({x: position.x - 1 + i, y: position.y + 1});
+
+                if(type === "borders"){
+                    let oldAttribute = createFieldBxs[position.y + 1][position.x - 1 + i].getAttribute('data-ship-id');
+
+                    if(oldAttribute !== null){
+                        let splitedAttr = oldAttribute.split(' ');
+
+                        if(!splitedAttr.includes(currentShipIndex.toString())){
+                            createFieldBxs[position.y + 1][position.x - 1 + i].setAttribute(`data-ship-id`, (`${oldAttribute} ${currentShipIndex}`));
+                        }
+                    }
+                    else{
+                        createFieldBxs[position.y + 1][position.x - 1 + i].setAttribute(`data-ship-id`, (currentShipIndex));
+                    }
+                }
             }
         }
     }

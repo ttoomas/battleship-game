@@ -1,5 +1,5 @@
-import { shipPositions, botShipPositions } from "./gameSetting.js";
-import { generateShipPosition } from "./genRandomPos.js";
+import { botShipPositions, shipPositions } from "./gameSetting.js";
+import { genSetBordersAndPos, generateShipPosition } from "./generatePos.js";
 
 // Crete fields
 const createFields = document.querySelector('.create__fields');
@@ -21,6 +21,19 @@ for (let i = 0; i < 9; i++) {
     }
 }
 
+// SET SHIP TRANSFORM ORIGIN
+const shipBxs = document.querySelectorAll('.create__shipBx');
+
+shipBxs.forEach(bx => {
+    let size = parseInt(getComputedStyle(bx).getPropertyValue('--create-size-count'));
+
+    let centerOrigin = size % 2 !== 0 ? true : false;
+
+    let origin = centerOrigin ? "center center" : `${size / 2 * 60}px ${size / 2 * 60}px`;
+
+    bx.style.transformOrigin = origin;
+})
+
 
 // MOVE WITH SHIP
 const createShips = document.querySelectorAll('.create__shipBx');
@@ -36,9 +49,7 @@ let isShipInField = false,
     activeBorderDel = false,
     deleteCurrentBorder = false;
 
-let mousePos = {x: undefined, y: undefined},
-    fieldShipPos = {x: undefined, y: undefined},
-    fieldShipFinalPos = {x: undefined, y: undefined};
+let mousePos = {x: undefined, y: undefined};
 let createFieldsInfo = createFields.getBoundingClientRect();
 
 
@@ -73,6 +84,7 @@ let mouseShipPos = [
 
 
 let currShipAllPos = {};
+
 
 // Get current mouse position
 window.addEventListener('mousemove', (e) => {
@@ -123,7 +135,7 @@ window.addEventListener('mousemove', (e) => {
         let helpShipSize = 0;
         
         if(createShips[currentShipIndex].classList.contains('rotatedShip') && (Math.max(currentShipInfo.width, currentShipInfo.height) / 4) % 2 === 0){
-            helpShipSize = 30;
+            helpShipSize = currentHalfCount * 60;
         }
 
         let finalFieldsShipPos = {
@@ -153,10 +165,10 @@ window.addEventListener('mousemove', (e) => {
                     shipPositions[currentShipIndex].x = oldShipPos.x
                     shipPositions[currentShipIndex].y = oldShipPos.y
                 }
-                
+
                 return;
             }
-         }
+        }
 
         shipPositions[currentShipIndex].coords = currShipAllPos;
 
@@ -191,15 +203,25 @@ window.addEventListener('mousemove', (e) => {
     else{
         if(isShipInField){
             deleteBorders();
+
+            shipPositions[currentShipIndex].x = null;
+            shipPositions[currentShipIndex].y = null;
+            shipPositions[currentShipIndex].coords = [];
         }
         
         isShipInField = false;
 
+        let currentCount;
+            currentShipInfo.width === 60 ? currentCount = 0 : currentCount = Math.max(currentShipInfo.height, currentShipInfo.width) / 60;
+        let currentHalfCount = Math.floor(currentCount / 2);
+
+        let rotatedHalf = (currentShipInfo.height < currentShipInfo.width && currentCount % 2 === 0) ? currentHalfCount * 60 - 30 : 0;
+
 
         createShips[currentShipIndex].animate(
             {
-                left: `${mousePos.x - currShipHalfWidth}px`,
-                top: `${mousePos.y - currShipHalfHeight}px`
+                left: `${mousePos.x - currShipHalfWidth - rotatedHalf}px`,
+                top: `${mousePos.y - currShipHalfHeight + rotatedHalf}px`
             },
             {
                 duration: 100,
@@ -226,6 +248,7 @@ createShips.forEach((ship, index) => {
         
         currentShipIndex = index;
 
+        currShipAllPos = shipPositions[currentShipIndex].coords;
         
         if(
             createFieldsInfo.left <= mousePos.x &&
@@ -248,14 +271,11 @@ window.addEventListener('mouseup', () => {
 
     shipMove = false;
     activeBorderDel = false;
-
-    let isCollision = checkBorderCollision();
-
-    //  || (!isCollision && shipPositions[currentShipIndex].x === 0 && shipPositions[currentShipIndex].y === 0)
-    if(isCollision){
+    
+    if(shipPositions[currentShipIndex].coords.length === 0){
         resetShipPosition();
         deleteBorders();
-        
+
         return;
     }
 
@@ -316,13 +336,6 @@ createRotateBtn.addEventListener('click', () => {
     createShips[currentShipIndex].classList.toggle('rotatedShip');
 
     let rotateAniDuration = 250;
-    let moveAniDuration = 150;
-
-    let helpShipSize = 0;
-        
-    if(createShips[currentShipIndex].classList.contains('rotatedShip') && (Math.max(currentShipInfo.width, currentShipInfo.height) / 4) % 2 === 0){
-        helpShipSize = 30;
-    }
 
     if(createShips[currentShipIndex].classList.contains('rotatedShip')){
         // Rotate
@@ -335,8 +348,6 @@ createRotateBtn.addEventListener('click', () => {
                 fill: "forwards"
             }
         )
-            
-        helpShipSize = 0;
     }
     else{
         // Return
@@ -349,80 +360,10 @@ createRotateBtn.addEventListener('click', () => {
                 fill: "forwards"
             }
         )
-            
-        // helpShipSize = 90 -> 2
-        // helpShipSize = 30 -> 1
-        if(createShips[currentShipIndex].clientHeight === 120){
-            helpShipSize = 30;
-        }
-        else if(createShips[currentShipIndex].clientHeight === 240){
-            helpShipSize = 90;
-        }
     }
 
     setTimeout(() => {
-        currentShipInfo = createShips[currentShipIndex].getBoundingClientRect();
-        currShipHalfWidth = Math.min(currentShipInfo.width / 2, currentShipInfo.height / 2);
-        currShipHalfHeight = Math.max(currentShipInfo.width / 2, currentShipInfo.height / 2);
-    
-    
-        let currentHalfCount = Math.floor((Math.max(currentShipInfo.height, currentShipInfo.width) / 60) / 2);
-        let currentHalfSize = currentHalfCount * 60;
-    
-        let isOdd = (Math.max(createShips[currentShipIndex].clientWidth, createShips[currentShipIndex].clientHeight) / 4) % 2 === 0 ? 30 : 0;
-
-        if(
-            currentShipInfo.left < createFieldsInfo.left ||
-            currentShipInfo.right > createFieldsInfo.right ||
-            currentShipInfo.top < createFieldsInfo.top ||
-            currentShipInfo.bottom > createFieldsInfo.bottom ||
-            isOdd !== 0
-        ){
-            if(createShips[currentShipIndex].classList.contains('rotatedShip')){
-                // Rotated
-                let newRotatedPos = {
-                    x: Math.max(currentShipInfo.left, (createFieldsInfo.left + currentHalfSize - isOdd)), // Left border
-                    y: currentShipInfo.top
-                }
-                
-                createShips[currentShipIndex].animate(
-                    {
-                        left: `${newRotatedPos.x}px`,
-                        top: `${newRotatedPos.y}px`
-                    },
-                    {
-                        duration: moveAniDuration,
-                        fill: "forwards"
-                    }
-                )
-            }
-            else{
-                // Original
-                let newRotatedPos = {
-                    x: currentShipInfo.left + currentHalfSize - isOdd,
-                    y: Math.max((currentShipInfo.top - currentHalfSize + isOdd), createFieldsInfo.top)
-                }
-        
-                createShips[currentShipIndex].animate(
-                    {
-                        left: `${newRotatedPos.x}px`,
-                        top: `${newRotatedPos.y}px`
-                    },
-                    {
-                        duration: moveAniDuration,
-                        fill: "forwards"
-                    }
-                )
-            }
-
-
-            setTimeout(() => {
-                rotateBorders();
-            }, (moveAniDuration + 50));
-        }
-        else{
-            rotateBorders();
-        }
+        rotateBorders();
     }, rotateAniDuration);
 })
 
@@ -441,6 +382,21 @@ function rotateBorders(){
         
         mouseShipPos[currentShipIndex].x = currPos.x;
         mouseShipPos[currentShipIndex].y = currPos.y;
+
+        
+        if(
+            currentShipInfo.left < createFieldsInfo.left ||
+            currentShipInfo.right > createFieldsInfo.right|
+            currentShipInfo.top < createFieldsInfo.top ||
+            currentShipInfo.bottom > createFieldsInfo.bottom
+        ){
+            resetShipPosition();
+
+            deleteCurrentBorder = false;
+            disabledRotateBtn = false;
+
+            return;
+        }
 
         let isCollision = checkBorderCollision();
 
@@ -830,35 +786,61 @@ function resetShipPosition(){
 const randomPosBtn = document.querySelector('.create__fieldBtn.fieldRandom');
 
 randomPosBtn.addEventListener('click', () => {
+    // Delete old borders
+    createFieldEach.forEach(field => {
+        field.removeAttribute('data-ship-id');
+    })
+
+    // Generate random position
     let generatedShipPos = generateShipPosition();
 
-    console.log(generatedShipPos);
-    
     generatedShipPos.forEach((info, index) => {
-        info.coords.forEach(coord => {
-            createFieldBxs[coord.y][coord.x].style.backgroundColor = `hsl(${index * 80}, 100%, 50%)`;
-        })
+        // Set ship positions
+        shipPositions[index].x = info.position.x;
+        shipPositions[index].y = info.position.y;
+        shipPositions[index].coords = info.coords;
 
-        let shipPosition = {
-            x: (info.position.x * 60) + createFieldsInfo.x,
-            y: (info.position.y * 60) + createFieldsInfo.y,
-            rotate: info.rotated * 90
-        }
+        // Set borders and place ship
+        let shipSize = shipPositions[index].size;
+        let rotX = info.rotated ? shipSize : 1;
+        let rotY = !info.rotated ? shipSize : 1;
+
+        genSetBordersAndPos(info.rotated, rotX, rotY, info.position, index, "borders");
         
-        console.log(shipPosition);
+        if(info.rotated) createShips[index].classList.add('rotatedShip');
 
+        let currentHalfCount = Math.floor(botShipPositions[index].size / 2);
+        let currentAdd = botShipPositions[index].size % 2 !== 0 && info.rotated ? (currentHalfCount * 60) : 0;
+
+        let shipPos = {
+            x: (info.position.x * 60) + createFieldsInfo.x + currentAdd,
+            y: (info.position.y * 60) + createFieldsInfo.y - currentAdd,
+            rotate: info.rotated * 90
+        };
+        
         createShips[index].animate(
             {
-                left: `${shipPosition.x}px`,
-                top: `${shipPosition.y}px`,
-                rotate: `${shipPosition.rotate}deg`
+                left: `${shipPos.x}px`,
+                top: `${shipPos.y}px`,
+                rotate: `${shipPos.rotate}deg`
             },
             {
                 duration: 0,
                 fill: "forwards"
             }
         )
-
-        console.log(info.position);
     })
+})
+
+
+// CLEAR GAME FIELD
+const fieldClearBtn = document.querySelector('.create__fieldBtn.fieldClear');
+
+fieldClearBtn.addEventListener('click', () => {
+    for (let i = 0; i < shipPositions.length; i++) {
+        currentShipIndex = i;
+
+        resetShipPosition();
+        deleteBorders();
+    }
 })

@@ -1,5 +1,5 @@
 import { shipPositions } from "./gameSetting.js";
-import { generateShipPosition } from "./genRandomPos.js";
+import { generateShipPosition } from "./generatePos.js";
 
 
 const startGameBtn = document.querySelector('.create__fieldBtn.fieldContinue');
