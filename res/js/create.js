@@ -1,4 +1,5 @@
-import { shipPositions } from "./gameSetting.js";
+import { shipPositions, botShipPositions } from "./gameSetting.js";
+import { generateShipPosition } from "./genRandomPos.js";
 
 // Crete fields
 const createFields = document.querySelector('.create__fields');
@@ -301,7 +302,7 @@ function updateShipCoords(){
 
 
 // ROTATE BUTTON
-const createRotateBtn = document.querySelector('.create__rotateBtn');
+const createRotateBtn = document.querySelector('.create__fieldBtn.fieldRotate');
 
 let disabledRotateBtn = false;
 
@@ -472,8 +473,6 @@ function checkBorderCollision(){
     if(!currentCoords.length) return false;
 
     setBordersAndPos();
-
-    console.log(currentShipPosition);
 
     currShipAllPos.map(coord => currentShipPosition.push(coord));
 
@@ -825,3 +824,41 @@ function resetShipPosition(){
         }
     )
 }
+
+
+// GENERATE RANDOM PLAYER POSITION AFTER CLICKING ON BUTTON
+const randomPosBtn = document.querySelector('.create__fieldBtn.fieldRandom');
+
+randomPosBtn.addEventListener('click', () => {
+    let generatedShipPos = generateShipPosition();
+
+    console.log(generatedShipPos);
+    
+    generatedShipPos.forEach((info, index) => {
+        info.coords.forEach(coord => {
+            createFieldBxs[coord.y][coord.x].style.backgroundColor = `hsl(${index * 80}, 100%, 50%)`;
+        })
+
+        let shipPosition = {
+            x: (info.position.x * 60) + createFieldsInfo.x,
+            y: (info.position.y * 60) + createFieldsInfo.y,
+            rotate: info.rotated * 90
+        }
+        
+        console.log(shipPosition);
+
+        createShips[index].animate(
+            {
+                left: `${shipPosition.x}px`,
+                top: `${shipPosition.y}px`,
+                rotate: `${shipPosition.rotate}deg`
+            },
+            {
+                duration: 0,
+                fill: "forwards"
+            }
+        )
+
+        console.log(info.position);
+    })
+})

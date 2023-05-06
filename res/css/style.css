@@ -2,6 +2,9 @@
 
 :root{
     --bx-size: 60px;
+    --light-navy: #669ACC;
+    --medium-navy: #005cb3;
+    --dark-navy: #004c94;
 }
 
 
@@ -109,6 +112,16 @@ html{
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.397);
 }
+.create__fieldArea{
+    display: flex;
+    flex-direction: row;
+    column-gap: 28px;
+}
+.create__fieldBx{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--dark-navy);
+}
 
 .create__textEdge{
     display: flex;
@@ -127,15 +140,16 @@ html{
     height: var(--bx-size);
 }
 .create__field.createText{
-    background-color: #0000d3;
+    background-color: var(--dark-navy);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 18px;
 }
 .create__field.createField{
-    background-color: #0093ff45;
-    border: 1px solid #0077ff;
+    background-color: var(--light-navy);
+    border: 1px solid var(--medium-navy);
 }
 .create__field.createField[data-ship-id]{
     background-color: #ff000045;
@@ -147,6 +161,40 @@ html{
 .create__fieldContainer{
     display: flex;
     flex-direction: row;
+}
+
+.create__fieldBtns{
+    display: flex;    
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 16px;
+}
+.create__fieldBtn{
+    font-size: 20px;
+    font-weight: 400;
+    border: 2px solid var(--dark-navy);
+    background-color: var(--light-navy);
+    color: white;
+    outline: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 200ms ease-in-out;
+}
+.create__fieldBtn:hover{
+    background-color: var(--dark-navy);
+}
+.create__fieldContinue{
+    display: flex;
+    margin-top: 28px;
+}
+.create__fieldContinue .create__fieldBtn{
+    font-size: 24px;
+    padding: 14px 30px;
+    visibility: hidden;
+    opacity: 0;
 }
 
 
