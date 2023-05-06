@@ -473,9 +473,12 @@ function checkBorderCollision(){
 
     setBordersAndPos();
 
+    console.log(currentShipPosition);
+
     currShipAllPos.map(coord => currentShipPosition.push(coord));
 
     let isColl = false;
+
 
     currentShipPosition.forEach(shipPos => {
         if(isColl) return;

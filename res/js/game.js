@@ -49,67 +49,81 @@ startGameBtn.addEventListener('click', () => {
 
 // Randomly generate ship positions
 let shipCount = shipPositions.length;
+// let shipCount = 2;
 let shipRandomCoords = Array.from(Array(shipCount), () => []);
-
-let currentShipPosition = [],
-    currShipAllPos = [];
 
 
 function generateShipPosition(){
-    for (let index = 0; index < shipCount; index++) {
-        let rotated = Math.random() > 0.5 ? true : false;
-        let shipSize = shipPositions[index].size; // 3
+    let breaked = false;
 
-        let rotX = rotated ? shipSize : 1;
-        let rotY = !rotated ? shipSize : 1;
+    do {
+        breaked = false;
 
-        let genShipPos = {
-            x: undefined,
-            y: undefined
-        };
-
-        do {
-            genShipPos = {
-                x: randomNum(0, 8),
-                y: randomNum(0, 8)
+        for (let index = 0; index < shipCount; index++) {
+            let rotated = Math.random() > 0.5 ? true : false;
+            let shipSize = shipPositions[index].size; // 3
+    
+            let rotX = rotated ? shipSize : 1;
+            let rotY = !rotated ? shipSize : 1;
+    
+            let genShipPos = {
+                x: undefined,
+                y: undefined
             };
-        } while (genShipPos.x + rotX > 9 || genShipPos.y + rotY > 9);
-
-
-        // let test = checkBotBorderCollision();
-        // console.log(test);
-
-        if(rotated){
-            // Increase x
-
-            for (let i = 0; i < shipSize; i++) {
-                let currGenPos = {
-                    x: genShipPos.x + i,
-                    y: genShipPos.y
+    
+            let isColl = false;
+    
+            let currentAttempt = 0;
+    
+            do {
+                currentAttempt++;
+    
+                do {
+                    genShipPos = {
+                        x: randomNum(0, 8),
+                        y: randomNum(0, 8)
+                    };
+                } while (genShipPos.x + rotX > 9 || genShipPos.y + rotY > 9);
+    
+                shipRandomCoords[index] = [];
+        
+                if(rotated){
+                    // Increase x
+        
+                    for (let i = 0; i < shipSize; i++) {
+                        let currGenPos = {
+                            x: genShipPos.x + i,
+                            y: genShipPos.y
+                        }
+        
+                        shipRandomCoords[index].push(currGenPos);
+                    }
                 }
-
-                shipRandomCoords[index].push(currGenPos);
-            }
-        }
-        else{
-            // Increase y
-
-            for (let i = 0; i < shipSize; i++) {
-                let currGenPos = {
-                    x: genShipPos.x,
-                    y: genShipPos.y + i
+                else{
+                    // Increase y
+        
+                    for (let i = 0; i < shipSize; i++) {
+                        let currGenPos = {
+                            x: genShipPos.x,
+                            y: genShipPos.y + i
+                        }
+        
+                        shipRandomCoords[index].push(currGenPos);
+                    }
                 }
-
-                shipRandomCoords[index].push(currGenPos);
-            }
+    
+                setBordersAndPos(rotated, rotX, rotY, genShipPos, index);
+                isColl = checkBorderCollision(rotated, rotX, rotY, genShipPos, index);
+    
+                if(currentAttempt >= 10){
+                    breaked = true;
+                    break;
+                }
+            } while (isColl);
         }
-
-        setBordersAndPos(rotated, rotX, rotY, genShipPos, index, "borders");
-    }
+    } while (breaked)
 
     
-    console.log(shipRandomCoords);
-
     // Show it on field
     shipRandomCoords.forEach((coords, index) => {
         coords.forEach(coord => {
@@ -120,7 +134,43 @@ function generateShipPosition(){
 
 
 
+// Check border collision
+let currentShipPosition = [],
+    currShipAllPos = [];
 
+function checkBorderCollision(rotated, rotX, rotY, position, currentShipIndex){
+    let currentCoords = [];
+    currentShipPosition = [];
+
+    shipRandomCoords.forEach((ship, index) => {
+        if(!ship.length || currentShipIndex === index) return;
+
+        ship.map(coord => currentCoords.push(coord));
+    })
+
+    if(!currentCoords.length) return false;
+
+    setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex);
+
+    currShipAllPos = shipRandomCoords[currentShipIndex];
+    currShipAllPos.map(coord => currentShipPosition.push(coord));
+
+    let isColl = false;
+
+    currentShipPosition.forEach(shipPos => {
+        if(isColl) return;
+
+        let is = currentCoords.filter(e => JSON.stringify(e) === JSON.stringify(shipPos));
+
+        if(is.length){
+            isColl = true;
+            return;
+        }
+    })
+
+    if(isColl) return true;
+    else return false;
+}
 
 // Set borders
 function setBordersAndPos(rotated, rotX, rotY, position, currentShipIndex, type){
