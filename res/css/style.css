@@ -310,8 +310,16 @@ html{
     height: var(--bx-size);
     background-color: var(--light-navy);
     border: 1px solid var(--medium-navy);
+
+    z-index: 10;
+    position: relative;
 }
-.gameShip__cover:first-of-type,
-.gameShip__cover:last-of-type{
-    opacity: 0;
+.gameShip__cover.disabled{
+    background-color: transparent;
+}
+.gameShip__cover.disabled:not(:last-of-type){
+    border-bottom: none;
+}
+.gameShip__cover.disabled:not(:first-of-type){
+    border-top: none;
 }

@@ -4,9 +4,19 @@ import { generateShipPosition } from "./generatePos.js";
 const gamePlayerField = document.querySelector('.player__field');
 const gameBotField = document.querySelector('.bot__field');
 
+// Generate game fields
 createHtmlFields(gamePlayerField, "gamePlayer");
 createHtmlFields(gameBotField, "gameBot");
 
+// const gameBotFieldContainers = document.querySelectorAll('.gameBot__fieldContainer');
+// const gameBotFieldBxs = [];
+
+// gameBotFieldContainers.forEach(container => {
+//     gameBotFieldBxs.push(container.querySelectorAll('.gameBotField.fieldBx'));
+// })
+
+
+// Generate ship positions
 let generatedPos = generateShipPosition();
 
 console.log(generatedPos);
@@ -17,9 +27,7 @@ const gameShipContainers = document.querySelectorAll('.gameShip__container');
 gameShipContainers.forEach(container => {
     let size = parseInt(getComputedStyle(container).getPropertyValue('--game-ship-size'));
 
-    let centerOrigin = size % 2 !== 0 ? true : false;
-
-    let origin = centerOrigin ? "center center" : `${size / 2 * 60}px ${size / 2 * 60}px`;
+    let origin = `${size / 2 * 60}px ${size / 2 * 60}px`;
 
     container.style.transformOrigin = origin;
 })
@@ -29,8 +37,6 @@ const botFieldInfo = gameBotField.getBoundingClientRect();
 
 generatedPos.forEach((info, index) => {
     console.log(info.position.x, info.position.y);
-
-    if(index !== 0) return;
 
     const shipPos = {
         x: botFieldInfo.left + ((info.position.x + 1) * 60),

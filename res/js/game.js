@@ -4,15 +4,6 @@ import { generateShipPosition } from "./generatePos.js";
 
 
 const startGameBtn = document.querySelector('.create__fieldBtn.fieldContinue');
-const createShipContainers = document.querySelectorAll('.create__shipContainer');
-const createFieldContainers = document.querySelectorAll('.create__fieldContainer');
-const eachCreateFields = document.querySelectorAll('.createField');
-
-let createFields = [];
-
-createFieldContainers.forEach(createContainer => {
-    createFields.push(createContainer.querySelectorAll('.createField'));
-})
 
 
 startGameBtn.addEventListener('click', () => {
@@ -20,3 +11,33 @@ startGameBtn.addEventListener('click', () => {
     console.log(shipPositions);
     console.log('---------------');
 })
+
+
+// Enable game functions
+const gameFieldEach = document.querySelectorAll('.gameBotField.fieldBx');
+const gameShipCovers = document.querySelectorAll('.gameShip__cover');
+
+const gameBotFieldContainers = document.querySelectorAll('.gameBot__fieldContainer');
+const gameBotFieldBxs = [];
+
+gameBotFieldContainers.forEach(container => {
+    gameBotFieldBxs.push(container.querySelectorAll('.gameBotField.fieldBx'));
+})
+
+function gameFunctions(){
+    gameFieldEach.forEach(field => {
+        field.addEventListener('click', () => {
+            field.style.backgroundColor = "red";
+        })
+    })
+
+    gameShipCovers.forEach(cover => {
+        cover.addEventListener('click', () => {
+            cover.classList.add('disabled');
+
+            console.log('hit');
+        })
+    })
+}
+
+gameFunctions();
