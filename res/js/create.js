@@ -1,27 +1,22 @@
 import { botShipPositions, shipPositions } from "./gameSetting.js";
 import { genSetBordersAndPos, generateShipPosition } from "./generatePos.js";
+import { createHtmlFields } from "./createField.js";
 
-// Crete fields
 const fieldContinueBtn = document.querySelector('.create__fieldBtn.fieldContinue');
 
-const createFields = document.querySelector('.create__fields');
-export let createFieldBxs = Array.from(Array(9), () => []);
-let createFieldEach = [];
+const createFieldBx = document.querySelector('.create__fieldBx');
 
-for (let i = 0; i < 9; i++) {
-    let newFieldBx = document.createElement('div');
-    newFieldBx.classList.add('create__fieldContainer');
-    createFields.appendChild(newFieldBx);
+createHtmlFields(createFieldBx, "create");
 
-    for (let j = 0; j < 9; j++) {
-        let newField = document.createElement('div');
-        newField.classList.add('create__field', 'createField');
-        newFieldBx.appendChild(newField);
+const createFields = document.querySelector('.fields__containerBx');
+const createFieldEach = document.querySelectorAll('.fieldBx.createField');
+const createFieldContainers = document.querySelectorAll('.create__fieldContainer');
+export const createFieldBxs = [];
 
-        createFieldBxs[i].push(newField);
-        createFieldEach.push(newField);
-    }
-}
+createFieldContainers.forEach(container => {
+    createFieldBxs.push(container.querySelectorAll('.fieldBx.createField'));
+})
+
 
 // SET SHIP TRANSFORM ORIGIN
 const shipBxs = document.querySelectorAll('.create__shipBx');
@@ -424,7 +419,12 @@ function rotateBorders(){
 
         deleteCurrentBorder = false;
 
-        if(isCollision) resetShipPosition();
+        if(isCollision){
+            resetShipPosition();
+
+            fieldContinueBtn.classList.remove('fade-in');
+            fieldContinueBtn.classList.add('fade-out');
+        }
         else checkBorders();
 
         disabledRotateBtn = false;

@@ -94,34 +94,7 @@
         <div class="create__fieldsContainer">
             <div class="create__fieldArea">
                 <div class="create__fieldBx">
-                    <div class="create__textEdge">
-                        <div class="create__field createText"></div>
-                        <div class="create__field createText">1</div>
-                        <div class="create__field createText">2</div>
-                        <div class="create__field createText">3</div>
-                        <div class="create__field createText">4</div>
-                        <div class="create__field createText">5</div>
-                        <div class="create__field createText">6</div>
-                        <div class="create__field createText">7</div>
-                        <div class="create__field createText">8</div>
-                        <div class="create__field createText">9</div>
-                    </div>
-                    <div class="create__bottom">
-                        <div class="create__numEdge">
-                            <div class="create__field createText">A</div>
-                            <div class="create__field createText">B</div>
-                            <div class="create__field createText">C</div>
-                            <div class="create__field createText">D</div>
-                            <div class="create__field createText">E</div>
-                            <div class="create__field createText">F</div>
-                            <div class="create__field createText">G</div>
-                            <div class="create__field createText">H</div>
-                            <div class="create__field createText">I</div>
-                        </div>
-                        <div class="create__fields">
-                            <!-- Create in js -->
-                        </div>
-                    </div>
+                    
                 </div>
 
                 <div class="create__fieldBtns">
@@ -138,15 +111,47 @@
     </section>
 
 
+    <section class="game">
+        <div class="game__player">
+            <div class="player__field">
+
+            </div>
+            <div class="player__ships">
+                <div class="gameShip__container" style="--game-ship-size: 4;">
+                    <video autoplay loop muted class="gameShip__video">
+                        <source src="./res/img/animated/battleship.mp4" type="video/mp4">
+                    </video>
+                    <div class="gameShip__bx">
+                        <span class="gameShip__cover"></span>
+                        <span class="gameShip__cover"></span>
+                        <span class="gameShip__cover"></span>
+                        <span class="gameShip__cover"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="game__bot">
+            <div class="bot__field">
+
+            </div>
+            <div class="bot__ships">
+                
+            </div>
+        </div>
+    </section>
+
+
     <section class="refresh">
         <h1 class="refresh__title">Please refresh the browser</h1>
         <button class="refresh__btn">Refresh</button>
     </section>
     
 
+
     <script src="./res/js/main.js" type="module"></script>
     <script src="./res/js/create.js" type="module"></script>
     <script src="./res/js/game.js" type="module"></script>
+    <script src="./res/js/prepareGame.js" type="module"></script>
     
 </body>
 </html>

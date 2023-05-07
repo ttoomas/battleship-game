@@ -123,23 +123,23 @@ html{
     border: 1px solid var(--dark-navy);
 }
 
-.create__textEdge{
+.field__textEdge{
     display: flex;
     flex-direction: row;
 }
-.create__bottom{
+.field__bottom{
     display: flex;
     flex-direction: row;
 }
-.create__numEdge{
+.field__numEdge{
     display: flex;
     flex-direction: column;
 }
-.create__field{
+.fieldBx{
     width: var(--bx-size);
     height: var(--bx-size);
 }
-.create__field.createText{
+.fieldBx.fieldText{
     background-color: var(--dark-navy);
     color: white;
     display: flex;
@@ -147,18 +147,18 @@ html{
     justify-content: center;
     font-size: 18px;
 }
-.create__field.createField{
+.fieldBx.mainField{
     background-color: var(--light-navy);
     border: 1px solid var(--medium-navy);
 }
-.create__field.createField[data-ship-id]{
+.fieldBx.mainField[data-ship-id]{
     background-color: #ff000045;
 }
-.create__fields{
+.fields__containerBx{
     display: flex;
     flex-direction: column;
 }
-.create__fieldContainer{
+.field__container{
     display: flex;
     flex-direction: row;
 }
@@ -273,4 +273,45 @@ html{
         opacity: 0;
         visibility: hidden;
     }
+}
+
+
+/* Game */
+.create{
+    display: none;
+}
+.game{
+    /* display: none !important; */
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    background-color: rgb(94, 94, 94);
+}
+
+.gameShip__container{
+    position: absolute;
+    left: 87px;
+    top: 265px;
+    display: grid;
+}
+.gameShip__video{
+    grid-column: 1;
+    grid-row: 1;
+}
+.gameShip__bx{
+    grid-column: 1;
+    grid-row: 1;
+}
+.gameShip__cover{
+    display: block;
+    width: var(--bx-size);
+    height: var(--bx-size);
+    background-color: var(--light-navy);
+    border: 1px solid var(--medium-navy);
+}
+.gameShip__cover:first-of-type,
+.gameShip__cover:last-of-type{
+    opacity: 0;
 }
