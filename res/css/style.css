@@ -288,38 +288,105 @@ html{
     justify-content: space-around;
     height: 100%;
     background-color: rgb(94, 94, 94);
+    position: relative;
+    overflow: hidden;
 }
 
-.gameShip__container{
+.playerShip__container,
+.botShip__container{
     position: absolute;
-    left: 87px;
-    top: 265px;
+    left: 0;
+    top: 0;
     display: grid;
 }
-.gameShip__video{
+.playerShip__video,
+.botShip__video{
     grid-column: 1;
     grid-row: 1;
 }
-.gameShip__bx{
+.playerShip__bx,
+.botShip__bx{
     grid-column: 1;
     grid-row: 1;
 }
-.gameShip__cover{
+.botShip__cover{
     display: block;
     width: var(--bx-size);
     height: var(--bx-size);
-    background-color: var(--light-navy);
+    /* background-color: var(--light-navy); */
+    background-color: cyan;
     border: 1px solid var(--medium-navy);
 
     z-index: 10;
     position: relative;
+
+    /* background-color: transparent; */
 }
-.gameShip__cover.disabled{
+.botShip__cover.disabled{
     background-color: transparent;
 }
-.gameShip__cover.disabled:not(:last-of-type){
+.botShip__cover.disabled:not(:last-of-type){
     border-bottom: none;
 }
-.gameShip__cover.disabled:not(:first-of-type){
+.botShip__cover.disabled:not(:first-of-type){
     border-top: none;
+}
+
+
+
+.playerShip__bx{
+    position: relative;
+}
+.playerShip__bx::before{
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--medium-navy);
+}
+.playerShip__cover{
+    width: var(--bx-size);
+    height: var(--bx-size);
+    background-color: var(--light-navy);
+    display: block;
+
+    background-repeat: no-repeat;
+    object-fit: none;
+}
+.playerShip__container:nth-of-type(1) .playerShip__cover{
+    background-size: 29px;
+    background-image: url(../img/battleship.png);
+    background-position: center calc(var(--player-ship-cover) * -60px + 23px);
+}
+.playerShip__container:nth-of-type(2) .playerShip__cover{
+    background-size: 47px;
+    background-image: url(../img/carrier.png);
+    background-position: center calc(var(--player-ship-cover) * -60px + 13px);
+}
+.playerShip__container:nth-of-type(3) .playerShip__cover{
+    background-size: 18px;
+    background-image: url(../img/cruiser.png);
+    background-position: center calc(var(--player-ship-cover) * -60px + 10px);
+}
+.playerShip__container:nth-of-type(4) .playerShip__cover{
+    background-size: 29px;
+    background-image: url(../img/destroyer.png);
+    background-position: center calc(var(--player-ship-cover) * -60px + 18px);
+}
+.playerShip__container:nth-of-type(5) .playerShip__cover{
+    background-size: 32px;
+    background-image: url(../img/rescueship.png);
+    background-position: center calc(var(--player-ship-cover) * -60px + 27px);
+}
+.playerShip__container:nth-of-type(6) .playerShip__cover{
+    background-size: 48px;
+    background-image: url(../img/submarine.png);
+    background-position: center calc(var(--player-ship-cover) * -60px + 53px);
+}
+
+.playerShip__cover.disabled{
+    opacity: 0;
 }
