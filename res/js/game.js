@@ -70,12 +70,46 @@ shipPositions.map(info => {
     info.coords.map(coord => playerShipCoords.push(coord));
 })
 
-// console.log(playerShipCoords);
+let hitted = false,
+    secondHit = false;
+let sides = ['top', 'right', 'bottom', 'left'];
+let generatedCoords;
+let currSide;
+
+let oldCoords = {x: undefined, y: undefined};
+
 
 function botPlay(){
-    const generatedCoords = {
-        x: randomNum(0, 8),
-        y: randomNum(0, 8)
+    if(hitted){
+        if(
+            !secondHit ||
+            (currSide === 'left' && generatedCoords.x <= 0) ||
+            (currSide === 'right' && generatedCoords.x >= 8) ||
+            (currSide === 'top' && generatedCoords.y <= 0) ||
+            (currSide === 'bottom' && generatedCoords.y >= 8)
+        ){
+            let sideIndex = randomNum(0, (sides.length - 1));
+    
+            currSide = sides[sideIndex];
+    
+            console.log(currSide);
+    
+            sides.splice(sideIndex, 1);
+
+            generatedCoords.x = oldCoords.x;
+            generatedCoords.y = oldCoords.y;
+        }
+        
+        switchSide(1);
+    }
+    else{
+        generatedCoords = {
+            x: randomNum(0, 8),
+            y: randomNum(0, 8)
+        };
+
+        oldCoords.x = generatedCoords.x;
+        oldCoords.y = generatedCoords.y;
     }
 
     console.log(generatedCoords);
@@ -87,9 +121,59 @@ function botPlay(){
         let shipCover = Array.from(playerShipCovers).find(x => x.getAttribute('data-ship-coord') == JSON.stringify(generatedCoords));
 
         shipCover.classList.add('disabled');
+
+        if(hitted) secondHit = true;
+        hitted = true;
+
+        let destroyed = true;
+        Array.from(shipCover.parentNode.querySelectorAll('.playerShip__cover')).map(cover => {if(!cover.classList.contains('disabled')) destroyed = false});
+
+        console.log(destroyed);
+        if(destroyed){
+            hitted = false;
+            secondHit = false;
+            sides = ['top', 'right', 'bottom', 'left'];
+            generatedCoords;
+            currSide;
+
+            oldCoords = {x: undefined, y: undefined};
+        }
     }
     else{
         // Missed
+        if(hitted) secondHit = false;
+
+        if(!currSide) return;
+
+        switchSide(-1);
+    }
+}
+
+function switchSide(add){
+    switch(currSide){
+        case 'top': {
+            generatedCoords.y -= add;
+            
+            break;
+        }
+        case 'bottom': {
+            generatedCoords.y += add;
+            
+            break;
+        }
+        case 'right': {
+            generatedCoords.x += add;
+
+            break;
+        }
+        case 'left': {
+            generatedCoords.x -= add;
+
+            break;
+        }
+        default: {
+            console.error('No side')
+        }
     }
 }
 
