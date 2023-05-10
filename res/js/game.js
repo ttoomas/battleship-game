@@ -92,8 +92,6 @@ function botPlay(){
     
             currSide = sides[sideIndex];
     
-            console.log(currSide);
-    
             sides.splice(sideIndex, 1);
 
             generatedCoords.x = oldCoords.x;
@@ -111,8 +109,6 @@ function botPlay(){
         oldCoords.x = generatedCoords.x;
         oldCoords.y = generatedCoords.y;
     }
-
-    console.log(generatedCoords);
 
     let hit = playerShipCoords.some(shipCoord => shipCoord.x === generatedCoords.x && shipCoord.y === generatedCoords.y);
 
@@ -141,6 +137,8 @@ function botPlay(){
     }
     else{
         // Missed
+        playerFieldBxs[generatedCoords.y][generatedCoords.x].style.backgroundColor = "red";
+
         if(hitted) secondHit = false;
 
         if(!currSide) return;
