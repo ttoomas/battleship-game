@@ -55,8 +55,6 @@ function gameFunctions(){
         cover.addEventListener('click', () => {
             cover.classList.add('disabled');
 
-            console.log('hit');
-
             botPlay();
         })
     })
@@ -77,6 +75,7 @@ let generatedCoords;
 let currSide;
 
 let oldCoords = {x: undefined, y: undefined};
+let botAllCoords = [];
 
 
 function botPlay(){
@@ -88,6 +87,32 @@ function botPlay(){
             (currSide === 'top' && generatedCoords.y <= 0) ||
             (currSide === 'bottom' && generatedCoords.y >= 8)
         ){
+
+            if(generatedCoords.x >= 8){
+                let delSideIndex = sides.indexOf('right');
+
+                if(delSideIndex >= 0) sides.splice(delSideIndex, 1);
+            }
+
+            if(generatedCoords.x <= 0){
+                let delSideIndex = sides.indexOf('left');
+
+                if(delSideIndex >= 0) sides.splice(delSideIndex, 1);
+            }
+
+            if(generatedCoords.y >= 8){
+                let delSideIndex = sides.indexOf('bottom');
+
+                if(delSideIndex >= 0) sides.splice(delSideIndex, 1);
+            }
+
+            if(generatedCoords.y <= 0){
+                let delSideIndex = sides.indexOf('top');
+
+                if(delSideIndex >= 0) sides.splice(delSideIndex, 1);
+            }
+
+
             let sideIndex = randomNum(0, (sides.length - 1));
     
             currSide = sides[sideIndex];
@@ -105,10 +130,18 @@ function botPlay(){
             x: randomNum(0, 8),
             y: randomNum(0, 8)
         };
+        // do {
+
+        //     console.log('jaja');
+        // } while (botAllCoords.some(coord => coord.x === generatedCoords.x && coord.y === generatedCoords.y))
 
         oldCoords.x = generatedCoords.x;
         oldCoords.y = generatedCoords.y;
     }
+
+
+    console.log(generatedCoords);
+
 
     let hit = playerShipCoords.some(shipCoord => shipCoord.x === generatedCoords.x && shipCoord.y === generatedCoords.y);
 
@@ -124,7 +157,7 @@ function botPlay(){
         let destroyed = true;
         Array.from(shipCover.parentNode.querySelectorAll('.playerShip__cover')).map(cover => {if(!cover.classList.contains('disabled')) destroyed = false});
 
-        console.log(destroyed);
+        // console.log(destroyed);
         if(destroyed){
             hitted = false;
             secondHit = false;
