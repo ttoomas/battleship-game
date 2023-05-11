@@ -11,6 +11,15 @@ refreshBtn.addEventListener('click', () => {
 })
 
 
+
+// SOCKET.IO
+const socket = io();
+
+socket.on('send', (data) => {
+    console.log(data);
+})
+
+
 // SECTION SWAPING
 const welcomeSection = document.querySelector('.welcome');
 const nameSection = document.querySelector('.name');
@@ -51,6 +60,8 @@ nameCreateBtn.addEventListener('click', () => {
 
     nameSection.style.display = "none";
     joinSection.style.display = "flex";
+
+    socket.emit('test', "hah");
 })
 
 nameJoinBtn.addEventListener('click', () => {
