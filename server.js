@@ -18,17 +18,56 @@ app.get('/', (req, res) => {
 
 
 
+// ROOMS
+const rooms = {};
+
 io.on('connection', (socket) => {
     console.log("connected");
+    console.log(rooms);
 
-    socket.on('test', (data) => {
-        let uuid = new Date().getTime().toString();
+    let roomId = 1;
 
-        socket.join(parseInt(data));
+    socket.on('createRoom', (playerName) => {
+        roomId = new Date().getTime().toString();
+        
+        rooms[roomId] = {};
+        rooms[roomId].players = [socket.id];
 
-        console.log("joined");
+        console.log(rooms);
+        
+        socket.join(roomId);
 
-        socket.emit('send', uuid);
+        console.log("user1 joined");
+
+        socket.emit('roomCreated', roomId);
+    })
+
+    socket.on('joinPlayer', (data) => {
+        console.log('player name: ' + data.userName);
+
+        if(
+            !rooms[data.roomId] ||
+            rooms[data.roomId].players.length >= 2
+        ){
+            socket.emit('joinRoomError');
+
+            return;
+        }
+
+        rooms[data.roomId].players.push(socket.id);
+
+        socket.join(parseInt(data.roomId));
+
+        console.log('user2 joined');
+
+        socket.emit('playerJoined');
+        io.to(data.roomId).emit('allPlayersIn');
+    })
+
+
+    // Disconnect
+    socket.on('disconnect', () => {
+        delete rooms[roomId];
     })
 })
 

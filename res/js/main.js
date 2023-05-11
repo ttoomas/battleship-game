@@ -12,15 +12,7 @@ refreshBtn.addEventListener('click', () => {
 
 
 
-// SOCKET.IO
-const socket = io();
-
-socket.on('send', (data) => {
-    console.log(data);
-})
-
-
-// SECTION SWAPING
+// INDEX ELEMENTS
 const welcomeSection = document.querySelector('.welcome');
 const nameSection = document.querySelector('.name');
 const roomSection = document.querySelector('.room');
@@ -30,6 +22,44 @@ const createSection = document.querySelector('.create');
 const gameSection = document.querySelector('.game');
 const loaderSection = document.querySelector('.loader');
 
+const joinRoomIdText = document.querySelector('.join__roomId');
+
+const roomIdInput = document.querySelector('.room__input');
+
+
+// SOCKET ROUTING
+const socket = io();
+
+socket.on('roomCreated', (uuid) => {
+    // Show join section and insert id to page info
+    nameSection.style.display = "none";
+    loaderSection.style.display = "none";
+    joinSection.style.display = "flex";
+
+    joinRoomIdText.innerText = uuid;
+})
+
+socket.on('playerJoined', () => {
+    // Show create section
+    roomSection.style.display = "none";
+    loaderSection.style.display = "none";
+
+    createSection.classList.add('activeCreate');
+})
+
+socket.on('allPlayersIn', () => {
+    // Show create section
+    joinSection.style.display = "none";
+
+    createSection.classList.add('activeCreate');
+})
+
+socket.on('joinRoomError', () => {
+    roomIdInput.classList.add('idInputErr');
+})
+
+
+// SECTION SWAPING
 // Welcome
 const welcomeOnlineBtn = document.querySelector('.welcome__btn.welcomeOnline');
 const welcomeBotBtn = document.querySelector('.welcome__btn.welcomeBot');
@@ -58,10 +88,9 @@ nameCreateBtn.addEventListener('click', () => {
 
     nameInput.classList.remove('noName');
 
-    nameSection.style.display = "none";
-    joinSection.style.display = "flex";
+    loaderSection.style.display = "flex";
 
-    socket.emit('test', "hah");
+    socket.emit('createRoom', nameInput.value);
 })
 
 nameJoinBtn.addEventListener('click', () => {
@@ -78,7 +107,6 @@ nameJoinBtn.addEventListener('click', () => {
 })
 
 // Room Id Section
-const roomIdInput = document.querySelector('.room__input');
 const roomBtn = document.querySelector('.room__btn');
 
 let roomIdLength = 5; // TODO - CHANGE ID TO ROOM ID LENGTH
@@ -94,6 +122,13 @@ roomBtn.addEventListener('click', () => {
 
     // TODO - Check if id is valid
     if(true){
-        roomSection.style.display = "none";
+        loaderSection.style.display = "none";
+
+        const data = {
+            userName: nameInput.value,
+            roomId: roomIdInput.value
+        }
+
+        socket.emit('joinPlayer', data);
     }
 })

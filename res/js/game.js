@@ -3,14 +3,14 @@ import { shipPositions } from "./gameSetting.js";
 import { generateShipPosition } from "./generatePos.js";
 
 
-const startGameBtn = document.querySelector('.create__fieldBtn.fieldContinue');
+// const startGameBtn = document.querySelector('.create__fieldBtn.fieldContinue');
 
 
-startGameBtn.addEventListener('click', () => {
-    console.log('Just started the game');
-    console.log(shipPositions);
-    console.log('---------------');
-})
+// startGameBtn.addEventListener('click', () => {
+//     console.log('Just started the game');
+//     console.log(shipPositions);
+//     console.log('---------------');
+// })
 
 
 // Game variables
