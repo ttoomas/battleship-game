@@ -139,8 +139,9 @@ function botPlay(){
         oldCoords.y = generatedCoords.y;
     }
 
-
+    botAllCoords.push(generatedCoords);
     console.log(generatedCoords);
+    console.table(botAllCoords)
 
 
     let hit = playerShipCoords.some(shipCoord => shipCoord.x === generatedCoords.x && shipCoord.y === generatedCoords.y);
