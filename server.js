@@ -133,18 +133,20 @@ io.on('connection', (socket) => {
 
     
     socket.on('movePlayers-game', () => {
-        // let joinedPlayer = {...rooms[roomId]};
+        const data = {
+            ships: {...rooms[roomId].positions},
+            creatorId: rooms[roomId].creator.playerId
+        };
 
-        // const data = {
-        //     creator: rooms[roomId].positions[socket.id]
-        // }
+        io.to(roomId).emit('move-game', data);
+    })
 
-        // delete joinedPlayer.positions[socket.id];
+    socket.on('ship-miss', (bxCoord) => {
+        socket.to(roomId).emit('get-ship-miss', bxCoord);
+    })
 
-        // data.joiner = Object.values(joinedPlayer.positions)[0];
-
-
-        io.to(roomId).emit('move-game', rooms[roomId].positions);
+    socket.on('ship-hit', (coverCoord) => {
+        socket.to(roomId).emit('get-ship-hit', (coverCoord));
     })
 
 

@@ -43,6 +43,7 @@ export function createHtmlFields(fieldBx, name){
         for (let j = 0; j < 9; j++) {
             let newField = document.createElement('div');
             newField.classList.add(`${name}Field`, 'fieldBx', 'mainField');
+            newField.setAttribute('data-field-coord', JSON.stringify({x: j, y: i}));
             newFieldBx.appendChild(newField);
         }
     }

@@ -50,7 +50,7 @@ const roomIdInput = document.querySelector('.room__input');
 
 
 // SOCKET ROUTING
-const socket = io();
+export const socket = io();
 let playerId;
 
 socket.on('roomCreated', (data) => {
@@ -117,10 +117,11 @@ socket.on('wait-startCreator', () => {
 })
 
 socket.on('move-game', (data) => {
-    const dataClone = {...data};
+    const dataClone = {...data.ships};
 
     const updatedInfo = {
-        playerInfo: data[playerId],
+        playerInfo: data.ships[playerId],
+        isCreator: data.creatorId == playerId ? true : false
     }
 
     delete dataClone[playerId];
