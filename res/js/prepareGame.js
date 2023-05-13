@@ -45,7 +45,7 @@ generatedPos.forEach((info, index) => {
 
 
 // Place player ships to player field
-function setPlayerShips(){
+export function setPlayerShips(){
     const playerFieldInfo = gamePlayerField.getBoundingClientRect();
 
     shipPositions.forEach((info, index) => {
@@ -67,5 +67,3 @@ function setPlayerShips(){
         })
     })
 }
-
-setPlayerShips();

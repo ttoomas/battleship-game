@@ -2,7 +2,7 @@ import { botShipPositions, shipPositions } from "./gameSetting.js";
 import { genSetBordersAndPos, generateShipPosition } from "./generatePos.js";
 import { createHtmlFields } from "./createField.js";
 
-const fieldContinueBtn = document.querySelector('.create__fieldBtn.fieldContinue');
+const fieldContinueBtns = document.querySelectorAll('.create__fieldBtn.fieldContinue');
 
 const createFieldBx = document.querySelector('.create__fieldBx');
 
@@ -276,14 +276,18 @@ window.addEventListener('mouseup', () => {
 
     if(!posCount){
         // Show continue btn
-        fieldContinueBtn.classList.add('fade-in');
-        fieldContinueBtn.classList.remove('fade-fix');
-        fieldContinueBtn.classList.remove('fade-out');
+        fieldContinueBtns.forEach(btn => {
+            btn.classList.add('fade-in');
+            btn.classList.remove('fade-fix');
+            btn.classList.remove('fade-out');
+        })
     }
     else{
         // Disable continue btb
-        fieldContinueBtn.classList.remove('fade-in');
-        fieldContinueBtn.classList.add('fade-out');
+        fieldContinueBtns.forEach(btn => {
+            btn.classList.remove('fade-in');
+            btn.classList.add('fade-out');
+        })
     }
     
     if(shipPositions[currentShipIndex].coords.length === 0){
@@ -362,6 +366,8 @@ createRotateBtn.addEventListener('click', () => {
                 fill: "forwards"
             }
         )
+
+        shipPositions[currentShipIndex].rotated = true;
     }
     else{
         // Return
@@ -374,6 +380,8 @@ createRotateBtn.addEventListener('click', () => {
                 fill: "forwards"
             }
         )
+
+        shipPositions[currentShipIndex].rotated = false;
     }
 
     setTimeout(() => {
@@ -422,8 +430,10 @@ function rotateBorders(){
         if(isCollision){
             resetShipPosition();
 
-            fieldContinueBtn.classList.remove('fade-in');
-            fieldContinueBtn.classList.add('fade-out');
+            fieldContinueBtns.forEach(btn => {
+                btn.classList.remove('fade-in');
+                btn.classList.add('fade-out');
+            })
         }
         else checkBorders();
 
@@ -818,6 +828,7 @@ randomPosBtn.addEventListener('click', () => {
         shipPositions[index].x = info.position.x;
         shipPositions[index].y = info.position.y;
         shipPositions[index].coords = info.coords;
+        shipPositions[index].rotated = info.rotated;
 
         // Set borders and place ship
         let shipSize = shipPositions[index].size;
@@ -850,9 +861,11 @@ randomPosBtn.addEventListener('click', () => {
         )
     })
 
-    fieldContinueBtn.classList.add('fade-in');
-    fieldContinueBtn.classList.remove('fade-out');
-    fieldContinueBtn.classList.remove('fade-fix');
+    fieldContinueBtns.forEach(btn => {
+        btn.classList.add('fade-in');
+        btn.classList.remove('fade-out');
+        btn.classList.remove('fade-fix');
+    })
 })
 
 
@@ -867,6 +880,8 @@ fieldClearBtn.addEventListener('click', () => {
         deleteBorders();
     }
 
-    fieldContinueBtn.classList.remove('fade-in');
-    fieldContinueBtn.classList.add('fade-out');
+    fieldContinueBtns.forEach(btn => {
+        btn.classList.remove('fade-in');
+        btn.classList.add('fade-out');
+    })
 })

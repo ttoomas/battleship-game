@@ -1,21 +1,41 @@
-import { createHtmlFields } from "./createField.js";
 import { shipPositions } from "./gameSetting.js";
-import { generateShipPosition } from "./generatePos.js";
+import { setPlayerShips } from "./prepareGame.js";
 
 
-// const startGameBtn = document.querySelector('.create__fieldBtn.fieldContinue');
+const startGameBtn = document.querySelector('.create__fieldBtn.fieldContinue.createBot');
+
+const createSection = document.querySelector('.create');
+const gameSection = document.querySelector('.game');
+const winSection = document.querySelector('.win');
+const winTitle = document.querySelector('.win__title');
+
+startGameBtn.addEventListener('click', () => {
+    console.log('Just started the game');
+    console.log(shipPositions);
+    console.log('---------------');
+
+    startBotGame();
+})
 
 
-// startGameBtn.addEventListener('click', () => {
-//     console.log('Just started the game');
-//     console.log(shipPositions);
-//     console.log('---------------');
-// })
+// Function to start the game
+function startBotGame(){
+    createSection.classList.remove('activeCreate');
+    gameSection.classList.add('activeGame');
+
+    setPlayerShips();
+
+    gameFunctions();
+
+    shipPositions.map(info => {
+        info.coords.map(coord => playerShipCoords.push(coord));
+    })
+}
 
 
 // Game variables
 const botFieldEach = document.querySelectorAll('.gameBotField.fieldBx');
-const botShipCovers = document.querySelectorAll('.botShip__cover');
+const botShipCovers = Array.from(document.querySelectorAll('.botShip__cover'));
 
 const botFieldContainers = document.querySelectorAll('.gameBot__fieldContainer');
 const botFieldBxs = [];
@@ -36,16 +56,17 @@ playerFieldContainers.forEach(container => {
 
 
 
-// After clicking on start game button
-gameFunctions();
-// setPlayerShips();
-
-
 // Enable game functions
+let playerHitFields = [];
+
 function gameFunctions(){
     botFieldEach.forEach(field => {
         field.addEventListener('click', () => {
+            // if(playerHitFields.indexOf(field) !== -1) return;
+
             field.style.backgroundColor = "red";
+
+            playerHitFields.push(field);
 
             botPlay();
         })
@@ -53,20 +74,28 @@ function gameFunctions(){
 
     botShipCovers.forEach(cover => {
         cover.addEventListener('click', () => {
-            cover.classList.add('disabled');
+            let hitCoverIndex = botShipCovers.indexOf(cover);
 
+            if(hitCoverIndex === -1) return;
+            
+            cover.classList.add('disabled');
+            
+            botShipCovers.splice(hitCoverIndex, 1);
+            
+            if(botShipCovers.length <= 0){
+                console.log('player win :)');
+                winSection.style.display = "flex";
+                
+                return;
+            }
+            
             botPlay();
         })
     })
 }
 
 // Bot generate random coords
-// console.log(shipPositions);
 let playerShipCoords = [];
-
-shipPositions.map(info => {
-    info.coords.map(coord => playerShipCoords.push(coord));
-})
 
 let hitted = false,
     secondHit = false;
@@ -75,7 +104,7 @@ let generatedCoords;
 let currSide;
 
 let oldCoords = {x: undefined, y: undefined};
-let botAllCoords = [];
+const botAllCoords = [];
 
 
 function botPlay(){
@@ -126,28 +155,28 @@ function botPlay(){
         switchSide(1);
     }
     else{
-        generatedCoords = {
-            x: randomNum(0, 8),
-            y: randomNum(0, 8)
-        };
-        // do {
-
-        //     console.log('jaja');
-        // } while (botAllCoords.some(coord => coord.x === generatedCoords.x && coord.y === generatedCoords.y))
+        do {
+            generatedCoords = {
+                x: randomNum(0, 8),
+                y: randomNum(0, 8)
+            };
+        } while (botAllCoords.some(coord => coord.x === generatedCoords.x && coord.y === generatedCoords.y))
 
         oldCoords.x = generatedCoords.x;
         oldCoords.y = generatedCoords.y;
     }
 
-    botAllCoords.push(generatedCoords);
-    console.log(generatedCoords);
-    console.table(botAllCoords)
-
+    botAllCoords[botAllCoords.length] = {};
+    botAllCoords[botAllCoords.length - 1].x = generatedCoords.x;
+    botAllCoords[botAllCoords.length - 1].y = generatedCoords.y;
 
     let hit = playerShipCoords.some(shipCoord => shipCoord.x === generatedCoords.x && shipCoord.y === generatedCoords.y);
+    let hitShipCoord = playerShipCoords.findIndex(shipCoord => shipCoord.x === generatedCoords.x && shipCoord.y === generatedCoords.y)
 
-    if(hit){
+    if(hit && hitShipCoord !== -1){
         // Hitted
+        playerShipCoords.splice(hitShipCoord, 1);
+
         let shipCover = Array.from(playerShipCovers).find(x => x.getAttribute('data-ship-coord') == JSON.stringify(generatedCoords));
 
         shipCover.classList.add('disabled');
@@ -158,7 +187,6 @@ function botPlay(){
         let destroyed = true;
         Array.from(shipCover.parentNode.querySelectorAll('.playerShip__cover')).map(cover => {if(!cover.classList.contains('disabled')) destroyed = false});
 
-        // console.log(destroyed);
         if(destroyed){
             hitted = false;
             secondHit = false;
@@ -167,6 +195,12 @@ function botPlay(){
             currSide;
 
             oldCoords = {x: undefined, y: undefined};
+        }
+
+        if(playerShipCoords.length <= 0){
+            console.log('Bot win :)');
+            winSection.style.display = "flex";
+            winTitle.innerText = "unfortunately, the bot won";
         }
     }
     else{

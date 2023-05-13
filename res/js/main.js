@@ -7,7 +7,14 @@ window.addEventListener('resize', () => {
 })
 
 refreshBtn.addEventListener('click', () => {
-    location.reload();
+    windowlocation.reload();
+})
+
+// WIN SECTION
+const winBtn = document.querySelector('.win__btn');
+
+winBtn.addEventListener('click', () => {
+    window.location.reload();
 })
 
 
@@ -31,6 +38,9 @@ const waitTitle = document.querySelector('.wait__title');
 const waitPlayerName = document.querySelector('.wait__playerName');
 const waitFirName = document.querySelector('.wait .infoBxCreator .info__name');
 const waitSecName = document.querySelector('.wait .infoBxJoiner .info__name');
+
+const createBotBtn = document.querySelector('.create__fieldBtn.fieldContinue.createBot');
+const createOnlineBtn = document.querySelector('.create__fieldBtn.fieldContinue.createOnline');
 
 const roomIdInput = document.querySelector('.room__input');
 
@@ -117,11 +127,15 @@ const welcomeBotBtn = document.querySelector('.welcome__btn.welcomeBot');
 welcomeOnlineBtn.addEventListener('click', () => {
     welcomeSection.style.display = "none";
     nameSection.style.display = "flex";
+
+    createBotBtn.style.display = "none";
 })
 
 welcomeBotBtn.addEventListener('click', () => {
     welcomeSection.style.display = "none";
     createSection.classList.add('activeCreate');
+    
+    createOnlineBtn.style.display = "none";
 })
 
 // Name section
@@ -192,9 +206,7 @@ joinContinueBtn.addEventListener('click', () => {
 })
 
 // Create Section
-const createContinueBtn = document.querySelector('.create__fieldBtn.fieldContinue');
-
-createContinueBtn.addEventListener('click', () => {
+createOnlineBtn.addEventListener('click', () => {
     socket.emit('movePlayers-wait');
 })
 
