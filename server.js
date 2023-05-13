@@ -31,7 +31,14 @@ io.on('connection', (socket) => {
         roomId = new Date().getTime().toString();
         
         rooms[roomId] = {};
-        rooms[roomId].players = [socket.id];
+        rooms[roomId].roomId = roomId;
+        rooms[roomId].creator = {};
+        rooms[roomId].creator.playerId = socket.id;
+        rooms[roomId].creator.name = playerName;
+        rooms[roomId].players = {
+            [socket.id]: playerName
+        };
+        rooms[roomId].created = [false];
 
         console.log(rooms);
         
@@ -39,7 +46,7 @@ io.on('connection', (socket) => {
 
         console.log("user1 joined");
 
-        socket.emit('roomCreated', roomId);
+        socket.emit('roomCreated', {roomId, playerName});
     })
 
     socket.on('joinPlayer', (data) => {
@@ -47,21 +54,73 @@ io.on('connection', (socket) => {
 
         if(
             !rooms[data.roomId] ||
-            rooms[data.roomId].players.length >= 2
+            Object.keys(rooms[data.roomId].players).length >= 2
         ){
             socket.emit('joinRoomError');
 
             return;
         }
 
-        rooms[data.roomId].players.push(socket.id);
+        roomId = data.roomId;
 
-        socket.join(parseInt(data.roomId));
+        const userInfo = {
+            roomId: roomId,
+            creatorName: rooms[roomId].creator.name,
+            joinerName: data.userName
+        }
+
+        
+        rooms[roomId].players[socket.id] = data.userName;
+        rooms[roomId].created.push(false);
+
+        socket.join(roomId);
+        
+        console.log(io.sockets.adapter.rooms.get(roomId));
 
         console.log('user2 joined');
 
-        socket.emit('playerJoined');
-        io.to(data.roomId).emit('allPlayersIn');
+        socket.emit('playerJoined', userInfo);
+        socket.to(roomId).emit('joinedPlayer', userInfo);
+    })
+
+
+    socket.on('movePlayers-create', () => {
+        // Move players from join section to create section (select ship positions)
+        if(Object.values(rooms[roomId].players).length !== 2) return;
+
+        io.to(roomId).emit('move-create');
+    })
+
+    socket.on('movePlayers-wait', () => {
+        rooms[roomId].created[0] === false ? rooms[roomId].created[0] = true : rooms[roomId].created[1] = true;
+
+        const secondNameArr = {...rooms[roomId].players};
+        delete secondNameArr[socket.id];
+        const secondName = Object.values(secondNameArr)[0];
+        
+
+        const data = {
+            playerName: rooms[roomId].players[socket.id],
+            secondName: secondName
+        }
+
+        socket.emit('move-wait', data);
+
+        if(rooms[roomId].created[1] === true){
+            // Waiting for creator to start the game
+            const data = {
+                creatorName: rooms[roomId].creator.name,
+                secondName: secondName
+            }
+
+            io.to(roomId).emit('wait-startScene', data);
+            io.to(rooms[roomId].creator.playerId).emit('wait-startCreator');
+        }
+    })
+
+    
+    socket.on('movePlayers-game', () => {
+        io.in(roomId).emit('move-game');
     })
 
 

@@ -38,7 +38,7 @@
         <h1 class="room__title">Enter your Room ID</h1>
 
         <div class="room__bx">
-            <input type="number" class="room__input" placeholder="Room ID">
+            <input type="text" class="room__input" placeholder="Room ID">
             <button class="room__btn">Join Room</button>
         </div>
     </section>
@@ -51,18 +51,24 @@
         </h2>
 
         <div class="join__info">
-            <div class="info__bx">
+            <div class="info__bx infoBxCreator">
                 <p class="info__name">ttoomas</p>
                 <p class="info__status">Joined</p>
             </div>
-            <div class="info__bx">
+            <div class="info__bx infoBxJoiner">
                 <p class="info__name">Waiting</p>
+                <p class="info__status">Joined</p>
                 <div class="info__waitDots">
                     <span class="info__dot"></span>
                     <span class="info__dot"></span>
                     <span class="info__dot"></span>
                 </div>
             </div>
+        </div>
+
+        <div class="join__btnBx">
+            <div class="join__subtitle">Waiting for the user to Start the game</div>
+            <button class="join__btn">Start</button>
         </div>
     </section>
 
@@ -73,18 +79,24 @@
         </h1>
 
         <div class="wait__info">
-            <div class="info__bx">
+            <div class="info__bx infoBxCreator">
                 <p class="info__name">ttoomas</p>
-                <p class="info__status">Joined</p>
+                <p class="info__status">Ready</p>
             </div>
-            <div class="info__bx">
-                <p class="info__name">Waiting</p>
+            <div class="info__bx infoBxJoiner">
+                <p class="info__wait">Waiting</p>
+                <p class="info__name">Player</p>
+                <p class="info__status">Ready</p>
                 <div class="info__waitDots">
                     <span class="info__dot"></span>
                     <span class="info__dot"></span>
                     <span class="info__dot"></span>
                 </div>
             </div>
+        </div>
+
+        <div class="wait__btnBx">
+            <button class="wait__startBtn">Start the Game</button>
         </div>
     </section>
 

@@ -461,6 +461,7 @@ h1, h2, h3, h4, h5, h6, p{
     font-size: 70px;
     text-transform: uppercase;
     margin-bottom: 14px;
+    text-align: center;
 }
 .join__roomText{
     font-size: 40px;
@@ -488,14 +489,14 @@ h1, h2, h3, h4, h5, h6, p{
     padding: 12px 50px;
     row-gap: 14px;
 }
-.info__bx:first-of-type .info__name{
+.info__bx.infoBxJoiner .info__status{
+    display: none;
+}
+.info__bx:not(.infoBxJoiner) .info__name{
     text-decoration-line: underline;
     text-decoration-style: wavy;
     text-underline-offset: 14px;
     text-decoration-thickness: 2px;
-}
-.info__bx:last-of-type{
-    row-gap: 8px;
 }
 .info__waitDots{
     display: flex;
@@ -503,6 +504,7 @@ h1, h2, h3, h4, h5, h6, p{
     align-items: center;
     justify-content: center;
     column-gap: 6px;
+    margin-top: -6px;
 }
 .info__dot{
     width: 6px;
@@ -518,6 +520,60 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .info__dot:last-of-type{
     animation: dotsAnimation 600ms 300ms ease-in infinite;
+}
+.join__btnBx{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 38px;
+}
+.join__btn{
+    font-size: 24px;
+    padding: 12px 44px;
+    background-color: var(--light-navy);
+    border: 2px solid var(--light-navy);
+    color: black;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
+
+    display: none;
+}
+.join__btn:hover{
+    background-color: black;
+    color: var(--light-navy);
+}
+.join__subtitle{
+    font-size: 34px;
+    color: var(--light-navy);
+    text-align: center;
+    text-transform: uppercase;
+    max-width: 510px;
+    line-height: 1.4;
+    margin-top: 20px;
+
+    display: none;
+}
+
+
+.join.playerJoined .info__waitDots{
+    display: none;
+}
+.join.playerJoined .info__bx.infoBxJoiner .info__status{
+    display: block;
+}
+.join.playerJoined .info__bx:last-of-type .info__name{
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-underline-offset: 14px;
+    text-decoration-thickness: 2px;
+}
+
+.join.textActive .join__subtitle{
+    display: block;
+}
+.join.buttonActive .join__btn{
+    display: block;
 }
 
 
@@ -553,17 +609,65 @@ h1, h2, h3, h4, h5, h6, p{
     font-size: 60px;
     text-align: center;
     max-width: 1000px;
+    line-height: 1.6;
 }
 .wait__playerName{
     text-decoration-line: underline;
     text-decoration-style: wavy;
-    text-underline-offset: 12px;
+    text-underline-offset: 20px;
     text-decoration-thickness: 4px;
 }
 .wait__info{
     display: flex;
     flex-direction: row;
     column-gap: 26px;
+}
+.wait__btnBx{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -12px;
+}
+.wait__startBtn{
+    font-size: 24px;
+    padding: 14px 44px;
+    background-color: var(--light-navy);
+    border: 2px solid var(--light-navy);
+    color: black;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
+
+    display: none;
+}
+.wait__startBtn:hover{
+    background-color: black;
+    color: var(--light-navy);
+}
+.wait .infoBxJoiner .info__name{
+    display: none;
+}
+
+.wait.playerReady .info__waitDots{
+    display: none;
+}
+.wait.playerReady .info__bx.infoBxJoiner .info__status{
+    display: block;
+}
+.wait.playerReady .info__bx:last-of-type .info__name{
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-underline-offset: 14px;
+    text-decoration-thickness: 2px;
+}
+.wait.playerReady .info__bx.infoBxJoiner .info__wait{
+    display: none;
+}
+.wait.playerReady .info__bx.infoBxJoiner .info__name{
+    display: block;
+}
+.wait.buttonActive .wait__startBtn{
+    display: block;
 }
 
 
