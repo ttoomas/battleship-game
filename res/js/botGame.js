@@ -62,7 +62,7 @@ let playerHitFields = [];
 function gameFunctions(){
     botFieldEach.forEach(field => {
         field.addEventListener('click', () => {
-            // if(playerHitFields.indexOf(field) !== -1) return;
+            if(playerHitFields.indexOf(field) !== -1) return;
 
             field.style.backgroundColor = "red";
 

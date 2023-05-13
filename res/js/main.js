@@ -1,3 +1,7 @@
+import { shipPositions } from "./gameSetting.js";
+import { startOnlineGame } from "./onlineGame.js";
+import { botPrepare } from "./prepareGame.js";
+
 // REFRESH SECTION
 const refresh = document.querySelector('.refresh');
 const refreshBtn = document.querySelector('.refresh__btn');
@@ -47,6 +51,7 @@ const roomIdInput = document.querySelector('.room__input');
 
 // SOCKET ROUTING
 const socket = io();
+let playerId;
 
 socket.on('roomCreated', (data) => {
     // FOR CREATOR AFTER CREATING THE ROOM
@@ -57,6 +62,8 @@ socket.on('roomCreated', (data) => {
 
     joinRoomIdText.innerText = data.roomId;
     joinCreatorName.innerText = data.playerName;
+
+    playerId = data.playerId;
 })
 
 socket.on('playerJoined', (data) => {
@@ -72,6 +79,8 @@ socket.on('playerJoined', (data) => {
     joinRoomIdText.innerText = data.roomId;
     joinJoinerName.innerText = data.joinerName;
     joinSection.classList.add('playerJoined', 'textActive');
+
+    playerId = data.playerId;
 })
 
 socket.on('joinedPlayer', (data) => {
@@ -100,16 +109,28 @@ socket.on('move-wait', (data) => {
 socket.on('wait-startScene', (data) => {
     waitSection.classList.add('playerReady');
 
-    waitTitle.innerText = `Waiting for player ${data.creatorName} to Start the game`;
+    waitTitle.innerText = `Waiting for the creator ${data.creatorName} to Start the game`;
 })
 
 socket.on('wait-startCreator', () => {
     waitSection.classList.add('buttonActive');
 })
 
-socket.on('move-game', () => {
+socket.on('move-game', (data) => {
+    const dataClone = {...data};
+
+    const updatedInfo = {
+        playerInfo: data[playerId],
+    }
+
+    delete dataClone[playerId];
+
+    updatedInfo.enemyInfo = Object.values(dataClone)[0];
+
+    startOnlineGame(updatedInfo);
+
     waitSection.style.display = "none";
-    gameSection.style.display = "flex";
+    gameSection.classList.add('activeGame');
 })
 
 
@@ -136,6 +157,8 @@ welcomeBotBtn.addEventListener('click', () => {
     createSection.classList.add('activeCreate');
     
     createOnlineBtn.style.display = "none";
+
+    botPrepare();
 })
 
 // Name section
@@ -207,7 +230,13 @@ joinContinueBtn.addEventListener('click', () => {
 
 // Create Section
 createOnlineBtn.addEventListener('click', () => {
-    socket.emit('movePlayers-wait');
+    // let playerShipPositions = [];
+    // shipPositions.map(info => playerShipPositions.push({x: info.x, y: info.y, rotated: info.rotated}));
+
+    // let playerShipCoords = [];
+    // shipPositions.map(info => info.coords.map(coord => playerShipCoords.push(coord)));
+
+    socket.emit('movePlayers-wait', shipPositions);
 })
 
 // Wait section

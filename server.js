@@ -38,6 +38,9 @@ io.on('connection', (socket) => {
         rooms[roomId].players = {
             [socket.id]: playerName
         };
+        rooms[roomId].positions = {
+            [socket.id]: []
+        };
         rooms[roomId].created = [false];
 
         console.log(rooms);
@@ -46,7 +49,7 @@ io.on('connection', (socket) => {
 
         console.log("user1 joined");
 
-        socket.emit('roomCreated', {roomId, playerName});
+        socket.emit('roomCreated', {roomId, playerName, playerId: socket.id});
     })
 
     socket.on('joinPlayer', (data) => {
@@ -66,11 +69,15 @@ io.on('connection', (socket) => {
         const userInfo = {
             roomId: roomId,
             creatorName: rooms[roomId].creator.name,
-            joinerName: data.userName
+            joinerName: data.userName,
+            playerId: socket.id
         }
 
         
         rooms[roomId].players[socket.id] = data.userName;
+        rooms[roomId].positions = {
+            [socket.id]: []
+        }
         rooms[roomId].created.push(false);
 
         socket.join(roomId);
@@ -91,7 +98,13 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('move-create');
     })
 
-    socket.on('movePlayers-wait', () => {
+    socket.on('movePlayers-wait', (shipInfo) => {
+        // rooms[roomId].ships[socket.id].coords = shipInfo.shipCoords;
+        // rooms[roomId].ships[socket.id].positions = shipInfo.shipPositions;
+        rooms[roomId].positions[socket.id] = shipInfo;
+
+        console.log(rooms);
+
         rooms[roomId].created[0] === false ? rooms[roomId].created[0] = true : rooms[roomId].created[1] = true;
 
         const secondNameArr = {...rooms[roomId].players};
@@ -120,7 +133,18 @@ io.on('connection', (socket) => {
 
     
     socket.on('movePlayers-game', () => {
-        io.in(roomId).emit('move-game');
+        // let joinedPlayer = {...rooms[roomId]};
+
+        // const data = {
+        //     creator: rooms[roomId].positions[socket.id]
+        // }
+
+        // delete joinedPlayer.positions[socket.id];
+
+        // data.joiner = Object.values(joinedPlayer.positions)[0];
+
+
+        io.to(roomId).emit('move-game', rooms[roomId].positions);
     })
 
 
