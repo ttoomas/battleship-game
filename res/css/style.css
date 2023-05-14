@@ -55,7 +55,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .create__ships{
     width: 100%;
-    background-color: black;
+    background-color: #0e171f;
     display: grid;
     grid-template-columns: repeat(2, auto);
     align-items: center;
@@ -126,7 +126,7 @@ h1, h2, h3, h4, h5, h6, p{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.397);
+    background-color: #9bb2c8;
 }
 .create__fieldArea{
     display: flex;
@@ -157,7 +157,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .fieldBx.fieldText{
     background-color: var(--dark-navy);
-    color: white;
+    color: #cde6ff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -168,7 +168,7 @@ h1, h2, h3, h4, h5, h6, p{
     border: 1px solid var(--medium-navy);
 }
 .fieldBx.mainField[data-ship-id]{
-    background-color: #ff000045;
+    background-color: #ff000069;
 }
 .fields__containerBx{
     display: flex;
@@ -295,10 +295,13 @@ h1, h2, h3, h4, h5, h6, p{
 /* Game */
 .game{
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+    row-gap: 26px;
     height: 100%;
-    background-color: rgb(94, 94, 94);
+    background-color: #182531;
+    color: var(--light-navy);
     position: relative;
     overflow: hidden;
 
@@ -315,6 +318,38 @@ h1, h2, h3, h4, h5, h6, p{
     visibility: visible;
 }
 
+.game__fields{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap: 100px;
+}
+.game__player, .game__bot{
+    display: flex;
+    flex-direction: column;
+    row-gap: 34px;
+    align-items: center;
+    justify-content: center;
+}
+.game__name{
+    font-size: 42px;
+    text-transform: capitalize;
+    position: relative;
+}
+.game__name::before{
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    transform: translateX(-50%);
+    width: 0%;
+    border-bottom: 5px dotted var(--light-navy);
+    transition: width 200ms ease-in-out;
+}
+.game__name.playerMove::before{
+    width: 70%;
+}
 .playerShip__container,
 .botShip__container{
     position: absolute;
@@ -414,6 +449,24 @@ h1, h2, h3, h4, h5, h6, p{
     opacity: 0;
 }
 
+.game__turn{
+    font-size: 42px;
+    margin-top: -14px;
+
+    opacity: 0;
+    visibility: hidden;
+}
+.game__turn.turnActive{
+    opacity: 1;
+    visibility: visible;
+}
+.gameTurn__name{
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-underline-offset: 12px;
+    text-decoration-thickness: 4px;
+}
+
 
 /* WELCOME SECTION */
 .welcome{
@@ -449,6 +502,64 @@ h1, h2, h3, h4, h5, h6, p{
     transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
 }
 .welcome__btn:hover{
+    background-color: black;
+    color: var(--light-navy);
+}
+
+
+/* BOTNAME SECTION */
+.botName{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    row-gap: 52px;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    color: var(--light-navy);
+
+    display: none;
+}
+.botName__title{
+    font-size: 68px;
+}
+.botName__bx{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    column-gap: 12px;
+}
+.botName__input{
+    outline: none;
+    border: 2px solid var(--light-navy);
+    background-color: black;
+    color: var(--light-navy);
+    font-size: 24px;
+    padding: 14px 30px;
+    border-radius: 12px 0 0 12px;
+}
+.botName__input::placeholder{
+    color: var(--light-navy);
+}
+.botName__input.noName{
+    border-color: var(--error-red);
+}
+.botName__input.noName::placeholder{
+    color: var(--error-red);
+}
+.botName__btn{
+    font-size: 24px;
+    color: black;
+    background-color: var(--light-navy);
+    outline: none;
+    border: 2px solid var(--light-navy);
+    border-radius: 0 12px 12px 0;
+    padding-inline: 30px;
+    cursor: pointer;
+    transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
+}
+.botName__btn:hover{
     background-color: black;
     color: var(--light-navy);
 }
@@ -870,6 +981,7 @@ h1, h2, h3, h4, h5, h6, p{
     font-size: 78px;
     text-transform: uppercase;
     text-align: center;
+    max-width: 1300px;
 }
 .win__btnBx{
     display: flex;

@@ -133,9 +133,13 @@ io.on('connection', (socket) => {
 
     
     socket.on('movePlayers-game', () => {
+        const playerNameClone = {...rooms[roomId].players};
+        delete playerNameClone[socket.id];
+
         const data = {
             ships: {...rooms[roomId].positions},
-            creatorId: rooms[roomId].creator.playerId
+            creatorId: rooms[roomId].creator.playerId,
+            playerNames: rooms[roomId].players
         };
 
         io.to(roomId).emit('move-game', data);
@@ -147,6 +151,14 @@ io.on('connection', (socket) => {
 
     socket.on('ship-hit', (coverCoord) => {
         socket.to(roomId).emit('get-ship-hit', (coverCoord));
+    })
+
+    socket.on('playerWin', () => {
+        let playersClone = {...rooms[roomId].players};
+        delete playersClone[socket.id];
+
+        io.to(socket.id).emit('over-win', Object.values(playersClone)[0]);
+        socket.to(roomId).emit('over-lose', rooms[roomId].players[socket.id]);
     })
 
 

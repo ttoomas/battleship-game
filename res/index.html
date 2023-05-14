@@ -21,6 +21,16 @@
     </section>
 
 
+    <section class="botName">
+        <h1 class="botName__title">Enter you name</h1>
+
+        <div class="botName__bx">
+            <input type="text" class="botName__input" placeholder="Your Name">
+            <button class="botName__btn">Play</button>
+        </div>
+    </section>
+
+
     <section class="name">
         <h1 class="name__title">Enter your name</h1>
         
@@ -44,7 +54,7 @@
     </section>
 
     <section class="join">
-        <h1 class="join__title">Waiting for player</h1>
+        <h1 class="join__title">Waiting for <span class="joinTitle__name">Player</span></h1>
         <h2 class="join__roomText">
             Room ID:
             <span class="join__roomId">20506994</span>
@@ -67,7 +77,7 @@
         </div>
 
         <div class="join__btnBx">
-            <div class="join__subtitle">Waiting for the creator to Start the game</div>
+            <div class="join__subtitle">Waiting for the <span class="joinSubtitle__name">Creator</span> to Start the game</div>
             <button class="join__btn">Continue</button>
         </div>
     </section>
@@ -204,146 +214,158 @@
 
 
     <section class="game">
-        <div class="game__player">
-            <div class="player__field">
-
+        <div class="game__fields">
+            <div class="game__player">
+                <h2 class="game__name gamePlayerName">You</h2>
+    
+                <div class="player__field">
+    
+                </div>
+                <div class="player__ships">
+                    <div class="playerShip__container" style="--game-ship-size: 4;">
+                        <video autoplay loop muted class="playerShip__video">
+                            <source src="/img/animated/battleship-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="playerShip__bx">
+                            <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 3"></span>
+                        </div>
+                    </div>
+                    <div class="playerShip__container" style="--game-ship-size: 3;">
+                        <video autoplay loop muted class="playerShip__video">
+                            <source src="/img/animated/carrier-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="playerShip__bx">
+                            <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
+                        </div>
+                    </div>
+                    <div class="playerShip__container" style="--game-ship-size: 2;">
+                        <video autoplay loop muted class="playerShip__video">
+                            <source src="/img/animated/cruiser-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="playerShip__bx">
+                            <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
+                        </div>
+                    </div>
+                    <div class="playerShip__container" style="--game-ship-size: 3;">
+                        <video autoplay loop muted class="playerShip__video">
+                            <source src="/img/animated/destroyer-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="playerShip__bx">
+                            <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
+                        </div>
+                    </div>
+                    <div class="playerShip__container" style="--game-ship-size: 4;">
+                        <video autoplay loop muted class="playerShip__video">
+                            <source src="/img/animated/rescueship-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="playerShip__bx">
+                            <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 3"></span>
+                        </div>
+                    </div>
+                    <div class="playerShip__container" style="--game-ship-size: 5;">
+                        <video autoplay loop muted class="playerShip__video">
+                            <source src="/img/animated/submarine-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="playerShip__bx">
+                            <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 3"></span>
+                            <span class="playerShip__cover" style="--player-ship-cover: 4"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="player__ships">
-                <div class="playerShip__container" style="--game-ship-size: 4;">
-                    <video autoplay loop muted class="playerShip__video">
-                        <source src="/img/animated/battleship-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="playerShip__bx">
-                        <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 3"></span>
-                    </div>
+            <div class="game__bot">
+                <h2 class="game__name gameBotName">Bot</h2>
+    
+                <div class="bot__field">
+    
                 </div>
-                <div class="playerShip__container" style="--game-ship-size: 3;">
-                    <video autoplay loop muted class="playerShip__video">
-                        <source src="/img/animated/carrier-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="playerShip__bx">
-                        <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
+                <div class="bot__ships">
+                    <div class="botShip__container" style="--game-ship-size: 4;">
+                        <video autoplay loop muted class="botShip__video">
+                            <source src="/img/animated/battleship-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="botShip__bx">
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="playerShip__container" style="--game-ship-size: 2;">
-                    <video autoplay loop muted class="playerShip__video">
-                        <source src="/img/animated/cruiser-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="playerShip__bx">
-                        <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
+                    <div class="botShip__container" style="--game-ship-size: 3;">
+                        <video autoplay loop muted class="botShip__video">
+                            <source src="/img/animated/carrier-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="botShip__bx">
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="playerShip__container" style="--game-ship-size: 3;">
-                    <video autoplay loop muted class="playerShip__video">
-                        <source src="/img/animated/destroyer-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="playerShip__bx">
-                        <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
+                    <div class="botShip__container" style="--game-ship-size: 2;">
+                        <video autoplay loop muted class="botShip__video">
+                            <source src="/img/animated/cruiser-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="botShip__bx">
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="playerShip__container" style="--game-ship-size: 4;">
-                    <video autoplay loop muted class="playerShip__video">
-                        <source src="/img/animated/rescueship-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="playerShip__bx">
-                        <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 3"></span>
+                    <div class="botShip__container" style="--game-ship-size: 3;">
+                        <video autoplay loop muted class="botShip__video">
+                            <source src="/img/animated/destroyer-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="botShip__bx">
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="playerShip__container" style="--game-ship-size: 5;">
-                    <video autoplay loop muted class="playerShip__video">
-                        <source src="/img/animated/submarine-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="playerShip__bx">
-                        <span class="playerShip__cover" style="--player-ship-cover: 0"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 1"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 2"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 3"></span>
-                        <span class="playerShip__cover" style="--player-ship-cover: 4"></span>
+                    <div class="botShip__container" style="--game-ship-size: 4;">
+                        <video autoplay loop muted class="botShip__video">
+                            <source src="/img/animated/rescueship-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="botShip__bx">
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                        </div>
+                    </div>
+                    <div class="botShip__container" style="--game-ship-size: 5;">
+                        <video autoplay loop muted class="botShip__video">
+                            <source src="/img/animated/submarine-fire.mp4" type="video/mp4">
+                        </video>
+                        <div class="botShip__bx">
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                            <span class="botShip__cover"></span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="game__bot">
-            <div class="bot__field">
 
-            </div>
-            <div class="bot__ships">
-                <div class="botShip__container" style="--game-ship-size: 4;">
-                    <video autoplay loop muted class="botShip__video">
-                        <source src="/img/animated/battleship-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="botShip__bx">
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                    </div>
-                </div>
-                <div class="botShip__container" style="--game-ship-size: 3;">
-                    <video autoplay loop muted class="botShip__video">
-                        <source src="/img/animated/carrier-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="botShip__bx">
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                    </div>
-                </div>
-                <div class="botShip__container" style="--game-ship-size: 2;">
-                    <video autoplay loop muted class="botShip__video">
-                        <source src="/img/animated/cruiser-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="botShip__bx">
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                    </div>
-                </div>
-                <div class="botShip__container" style="--game-ship-size: 3;">
-                    <video autoplay loop muted class="botShip__video">
-                        <source src="/img/animated/destroyer-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="botShip__bx">
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                    </div>
-                </div>
-                <div class="botShip__container" style="--game-ship-size: 4;">
-                    <video autoplay loop muted class="botShip__video">
-                        <source src="/img/animated/rescueship-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="botShip__bx">
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                    </div>
-                </div>
-                <div class="botShip__container" style="--game-ship-size: 5;">
-                    <video autoplay loop muted class="botShip__video">
-                        <source src="/img/animated/submarine-fire.mp4" type="video/mp4">
-                    </video>
-                    <div class="botShip__bx">
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                        <span class="botShip__cover"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <h2 class="game__turn">
+            Now is
+            <span class="gameTurn__name">Ttoomas</span>'s
+            Turn
+        </h2>
     </section>
 
 

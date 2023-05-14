@@ -64,7 +64,7 @@ function gameFunctions(){
         field.addEventListener('click', () => {
             if(playerHitFields.indexOf(field) !== -1) return;
 
-            field.style.backgroundColor = "red";
+            field.style.backgroundColor = "#ff5858";
 
             playerHitFields.push(field);
 
@@ -205,7 +205,7 @@ function botPlay(){
     }
     else{
         // Missed
-        playerFieldBxs[generatedCoords.y][generatedCoords.x].style.backgroundColor = "red";
+        playerFieldBxs[generatedCoords.y][generatedCoords.x].style.backgroundColor = "#ff5858";
 
         if(hitted) secondHit = false;
 

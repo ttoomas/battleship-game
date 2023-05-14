@@ -25,18 +25,22 @@ winBtn.addEventListener('click', () => {
 
 // INDEX ELEMENTS
 const welcomeSection = document.querySelector('.welcome');
+const botNameSection = document.querySelector('.botName');
 const nameSection = document.querySelector('.name');
 const roomSection = document.querySelector('.room');
 const joinSection = document.querySelector('.join');
 const waitSection = document.querySelector('.wait');
 const createSection = document.querySelector('.create');
 const gameSection = document.querySelector('.game');
+const winSection = document.querySelector('.win');
 const loaderSection = document.querySelector('.loader');
 
 const joinRoomIdText = document.querySelector('.join__roomId');
 const joinCreatorName = document.querySelector('.join .info__bx.infoBxCreator .info__name');
 const joinJoinerName = document.querySelector('.join .info__bx.infoBxJoiner .info__name');
 const joinJoinerStatus = document.querySelector('.join .info__bx.infoBxJoiner .info__status');
+const joinSubtitleName = document.querySelector('.joinSubtitle__name');
+const joinTitleName = document.querySelector('.joinTitle__name');
 
 const waitTitle = document.querySelector('.wait__title');
 const waitPlayerName = document.querySelector('.wait__playerName');
@@ -47,6 +51,13 @@ const createBotBtn = document.querySelector('.create__fieldBtn.fieldContinue.cre
 const createOnlineBtn = document.querySelector('.create__fieldBtn.fieldContinue.createOnline');
 
 const roomIdInput = document.querySelector('.room__input');
+
+const gamePlayerName = document.querySelector('.game__name.gamePlayerName');
+const gameBotName = document.querySelector('.game__name.gameBotName');
+const gameTurnText = document.querySelector('.game__turn');
+const gameTurnName = document.querySelector('.gameTurn__name');
+
+const winTitle = document.querySelector('.win__title');
 
 
 // SOCKET ROUTING
@@ -74,6 +85,8 @@ socket.on('playerJoined', (data) => {
     joinSection.style.display = "flex";
 
     joinCreatorName.innerText = data.creatorName;
+    joinSubtitleName.innerText = data.creatorName;
+    joinTitleName.innerText = data.creatorName;
 
     joinJoinerStatus.innerText = "Joined";
     joinRoomIdText.innerText = data.roomId;
@@ -87,6 +100,7 @@ socket.on('joinedPlayer', (data) => {
     // FOR CREATOR AFTER PLAYER IS JOINED
     joinJoinerStatus.innerText = "Joined";
     joinJoinerName.innerText = data.joinerName;
+    joinTitleName.innerText = data.creatorName;
     joinSection.classList.add('playerJoined', 'buttonActive');
 })
 
@@ -109,7 +123,7 @@ socket.on('move-wait', (data) => {
 socket.on('wait-startScene', (data) => {
     waitSection.classList.add('playerReady');
 
-    waitTitle.innerText = `Waiting for the creator ${data.creatorName} to Start the game`;
+    waitTitle.innerText = `Waiting for ${data.creatorName} to Start the game`;
 })
 
 socket.on('wait-startCreator', () => {
@@ -125,13 +139,37 @@ socket.on('move-game', (data) => {
     }
 
     delete dataClone[playerId];
-
+    
     updatedInfo.enemyInfo = Object.values(dataClone)[0];
 
-    startOnlineGame(updatedInfo);
+    const namesClone = {...data.playerNames};
+    delete namesClone[playerId];
+
+    startOnlineGame({...updatedInfo, playerName: data.playerNames[playerId], enemyName: Object.values(namesClone)[0]});
+
+    gameTurnText.classList.add('turnActive');
+    gameTurnName.innerText = data.playerNames[data.creatorId];
+
+    gamePlayerName.innerText = data.playerNames[playerId];
+    gameBotName.innerText = Object.values(namesClone)[0];
+    updatedInfo.isCreator ? gamePlayerName.classList.add('playerMove') : gameBotName.classList.add('playerMove');
 
     waitSection.style.display = "none";
     gameSection.classList.add('activeGame');
+})
+
+socket.on('over-win', (enemyName) => {
+    // You win
+    winSection.style.display = "flex";
+
+    winTitle.innerText = `Congratulations, you won! Player ${enemyName} unfortunately lost.`;
+})
+
+socket.on('over-lose', (enemyName) => {
+    // You lose
+    winSection.style.display = "flex";
+
+    winTitle.innerText = `Unfortunately you lost, player ${enemyName} won!`;
 })
 
 
@@ -155,12 +193,36 @@ welcomeOnlineBtn.addEventListener('click', () => {
 
 welcomeBotBtn.addEventListener('click', () => {
     welcomeSection.style.display = "none";
-    createSection.classList.add('activeCreate');
+    botNameSection.style.display = "flex";
     
     createOnlineBtn.style.display = "none";
 
     botPrepare();
 })
+
+// BotName Section
+const botNameInput = document.querySelector('.botName__input');
+const botNameBtn = document.querySelector('.botName__btn');
+
+let botName;
+
+botNameBtn.addEventListener('click', () => {
+    if(botNameInput.value.length <= 3){
+        botNameInput.classList.add('noName');
+
+        return;
+    }
+
+    botNameInput.classList.remove('noName');
+
+    botName = botNameInput.value;
+    gamePlayerName.innerText = botName;
+    gameTurnName.innerText = botName;
+
+    botNameSection.style.display = "none";
+    createSection.classList.add('activeCreate');
+})
+
 
 // Name section
 const nameInput = document.querySelector('.name__input');

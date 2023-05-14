@@ -3,11 +3,21 @@ import { setShipPositions } from "./prepareGame.js";
 
 
 
+const gamePlayerName = document.querySelector('.game__name.gamePlayerName');
+const gameBotName = document.querySelector('.game__name.gameBotName');
+const gameTurnName = document.querySelector('.gameTurn__name');
+
 let canClick = false;
+
+let playerName,
+    enemyName;
 
 
 export function startOnlineGame(data){
     console.log(data);
+
+    playerName = data.playerName;
+    enemyName = data.enemyName;
 
     canClick = data.isCreator;
 
@@ -19,36 +29,52 @@ function gameHandler(data){
     setShipPositions(data.playerInfo, 1);
 
     eventHandler();
+
+    console.log('you: ' + playerName);
+    console.log('enemy: ' + enemyName);
 }
 
 
 // Event handler
-const enemyFieldBxs = document.querySelectorAll('.gameBotField.fieldBx');
-const enemyFieldCovers = document.querySelectorAll('.botShip__cover');
+const enemyFieldBxs = Array.from(document.querySelectorAll('.gameBotField.fieldBx'));
+const enemyFieldCovers = Array.from(document.querySelectorAll('.botShip__cover'));
+
+let hittedBxs = [],
+    hittedCovers = [];
 
 function eventHandler(){
     enemyFieldBxs.forEach(bx => {
         bx.addEventListener('click', () => {
-            if(!canClick) return;
+            if(!canClick || hittedBxs.indexOf(bx) !== -1) return;
             canClick = false;
 
-            bx.style.backgroundColor = "red";
-
+            bx.style.backgroundColor = "#ff5858";
             let bxCoord = JSON.parse(bx.getAttribute('data-field-coord'));
 
+            hittedBxs.push(bx);
+            changeTurnText();
+            
             socket.emit('ship-miss', bxCoord);
         })
     })
 
     enemyFieldCovers.forEach(cover => {
         cover.addEventListener('click', () => {
-            if(!canClick) return;
+            if(!canClick || hittedCovers.indexOf(cover) !== -1) return;
             canClick = false;
 
             cover.style.opacity = "0";
 
             let coverCoord = JSON.parse(cover.getAttribute('data-ship-coord'));
 
+            hittedCovers.push(cover);
+
+            if(hittedCovers.length === enemyFieldCovers.length){
+                socket.emit('playerWin');
+            }
+
+            changeTurnText();
+            
             socket.emit('ship-hit', coverCoord);
         })
     })
@@ -67,10 +93,12 @@ const fieldCovers = Array.from(document.querySelectorAll('.playerShip__cover'));
 window.addEventListener('load', () => {
     // Get miss-hit
     socket.on('get-ship-miss', (bxCoord) => {
-        console.log('got something');
-        fieldBxs[bxCoord.y][bxCoord.x].style.backgroundColor = "red";
+        console.log('missed something');
+        fieldBxs[bxCoord.y][bxCoord.x].style.backgroundColor = "#ff5858";
 
         canClick = true;
+
+        changeTurnText();
     })
 
     // Get hit
@@ -81,5 +109,26 @@ window.addEventListener('load', () => {
         fieldCovers.map(cover => {if(cover.getAttribute('data-ship-coord') === coverCoordString) cover.style.opacity = 0; return});
 
         canClick = true;
+
+        changeTurnText();
     })
 })
+
+
+// Function to change turn texts
+function changeTurnText(){
+    if(canClick){
+        // Your turn
+        gamePlayerName.classList.add('playerMove');
+        gameBotName.classList.remove('playerMove');
+
+        gameTurnName.innerText = playerName;
+    }
+    else{
+        // Enemy turn
+        gamePlayerName.classList.remove('playerMove');
+        gameBotName.classList.add('playerMove');
+
+        gameTurnName.innerText = enemyName;
+    }
+}
