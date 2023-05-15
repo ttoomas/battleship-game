@@ -1,6 +1,7 @@
 # BattleShip Game 
 
-## [Live Page](https://ttoomas.github.io/battleship-game/)
+## [Live Page](https://ttoomas-battleship-game.glitch.me/)
+- Deployed using [Glitch.com](https://glitch.com/), so the first load time will slower
 ## [Github Repo](https://github.com/ttoomas/battleship-game)
 
 
