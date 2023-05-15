@@ -25,8 +25,9 @@ winBtn.addEventListener('click', () => {
 
 // INDEX ELEMENTS
 const welcomeSection = document.querySelector('.welcome');
-const botNameSection = document.querySelector('.botName');
 const nameSection = document.querySelector('.name');
+const botNameSection = document.querySelector('.botName');
+const linkNameSection = document.querySelector('.nameLink');
 const roomSection = document.querySelector('.room');
 const joinSection = document.querySelector('.join');
 const waitSection = document.querySelector('.wait');
@@ -52,10 +53,14 @@ const createOnlineBtn = document.querySelector('.create__fieldBtn.fieldContinue.
 
 const roomIdInput = document.querySelector('.room__input');
 
+const joinRoomCopyBtn = document.querySelector('.join__roomIconBx');
+
 const gamePlayerName = document.querySelector('.game__name.gamePlayerName');
 const gameBotName = document.querySelector('.game__name.gameBotName');
 const gameTurnText = document.querySelector('.game__turn');
 const gameTurnName = document.querySelector('.gameTurn__name');
+
+const nameLinkRoomId = document.querySelector('.nameLink__roomId');
 
 const winTitle = document.querySelector('.win__title');
 
@@ -75,6 +80,8 @@ socket.on('roomCreated', (data) => {
     joinCreatorName.innerText = data.playerName;
 
     playerId = data.playerId;
+
+    joinCopyBtnHandler(data.roomId);
 })
 
 socket.on('playerJoined', (data) => {
@@ -83,6 +90,8 @@ socket.on('playerJoined', (data) => {
     roomSection.style.display = "none";
     loaderSection.style.display = "none";
     joinSection.style.display = "flex";
+
+    joinRoomCopyBtn.style.display = "none";
 
     joinCreatorName.innerText = data.creatorName;
     joinSubtitleName.innerText = data.creatorName;
@@ -98,6 +107,8 @@ socket.on('playerJoined', (data) => {
 
 socket.on('joinedPlayer', (data) => {
     // FOR CREATOR AFTER PLAYER IS JOINED
+    joinRoomCopyBtn.style.display = "none";
+
     joinJoinerStatus.innerText = "Joined";
     joinJoinerName.innerText = data.joinerName;
     joinTitleName.innerText = data.creatorName;
@@ -170,6 +181,36 @@ socket.on('over-lose', (enemyName) => {
     winSection.style.display = "flex";
 
     winTitle.innerText = `Unfortunately you lost, player ${enemyName} won!`;
+})
+
+
+socket.on('link-join-room-init', (data) => {
+    welcomeSection.style.display = "none";
+    linkNameSection.style.display = "flex";
+
+    nameLinkRoomId.innerText = data.roomId;
+
+    createBotBtn.style.display = "none";
+})
+
+socket.on('link-joinedPlayer', (data) => {
+    // FOR JOINED USER USING LINK JOIN METHOD
+    // Show create section
+    linkNameSection.style.display = "none";
+    joinSection.style.display = "flex";
+
+    joinRoomCopyBtn.style.display = "none";
+
+    joinCreatorName.innerText = data.creatorName;
+    joinSubtitleName.innerText = data.creatorName;
+    joinTitleName.innerText = data.creatorName;
+
+    joinJoinerStatus.innerText = "Joined";
+    joinRoomIdText.innerText = data.roomId;
+    joinJoinerName.innerText = data.joinerName;
+    joinSection.classList.add('playerJoined', 'textActive');
+
+    playerId = data.playerId;
 })
 
 
@@ -288,6 +329,16 @@ joinContinueBtn.addEventListener('click', () => {
     socket.emit('movePlayers-create');
 })
 
+function joinCopyBtnHandler(roomId){
+    joinRoomCopyBtn.addEventListener('click', () => {
+        let originUrl = window.location.origin;
+        let finalUrl = `${originUrl}/game/?id=${roomId}`;
+        let finalText = `Play Battleship Game with me: ${finalUrl}`;
+
+        navigator.clipboard.writeText(finalText);
+    })
+}
+
 // Create Section
 createOnlineBtn.addEventListener('click', () => {
     // let playerShipPositions = [];
@@ -304,4 +355,21 @@ const waitStartBtn = document.querySelector('.wait__startBtn');
 
 waitStartBtn.addEventListener('click', () => {
     socket.emit('movePlayers-game');
+})
+
+
+// NameLink Section
+const nameLinkInput = document.querySelector('.nameLink__input');
+const nameLinkBtn = document.querySelector('.nameLink__btn');
+
+nameLinkBtn.addEventListener('click', () => {
+    if(nameLinkInput.value.length <= 3){
+        nameLinkInput.classList.add('noName');
+
+        return;
+    }
+
+    nameLinkInput.classList.remove('noName');
+
+    socket.emit('link-joined-send', {userName: nameLinkInput.value});
 })

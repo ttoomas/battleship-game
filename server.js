@@ -12,8 +12,19 @@ const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, ('res'))));
 
 
+let reqRoomId = null;
+
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/res/index.html');
+    res.sendFile(__dirname + '/res/game.html');
+ // if(currentRoom === undefined || currentRoom === null || currentRoom.players.length >= 2) return;
+})
+
+app.get('/game/', (req, res) => {
+    if(req.query.id === null || req.query.id === undefined) return;
+
+    reqRoomId = req.query.id;
+
+    res.redirect('/');
 })
 
 
@@ -25,7 +36,19 @@ io.on('connection', (socket) => {
     console.log("connected");
     console.log(rooms);
 
+
     let roomId = 1;
+
+
+    // TODO - reqRoomId !== undefined && reqRoomId !== null && rooms[reqRoomId] && rooms[reqRoomId].players.length < 2
+    if(reqRoomId !== undefined && reqRoomId !== null){
+        io.to(socket.id).emit('link-join-room-init', {roomId: reqRoomId});
+
+        roomId = reqRoomId;
+
+        reqRoomId = null;
+    }
+   
 
     socket.on('createRoom', (playerName) => {
         let dateTime = new Date().getTime().toString();
@@ -164,6 +187,46 @@ io.on('connection', (socket) => {
 
         io.to(socket.id).emit('over-win', Object.values(playersClone)[0]);
         socket.to(roomId).emit('over-lose', rooms[roomId].players[socket.id]);
+    })
+
+
+    socket.on('link-joined-send', (data) => {
+        console.log('haha');
+
+        if(
+            !rooms[roomId] ||
+            Object.keys(rooms[roomId].players).length >= 2
+        ){
+            socket.emit('joinRoomError');
+
+            return;
+        }
+
+        console.log('ups');
+
+
+        const userInfo = {
+            roomId: roomId,
+            creatorName: rooms[roomId].creator.name,
+            joinerName: data.userName,
+            playerId: socket.id
+        }
+
+        
+        rooms[roomId].players[socket.id] = data.userName;
+        rooms[roomId].positions = {
+            [socket.id]: []
+        }
+        rooms[roomId].created.push(false);
+
+        socket.join(roomId);
+        
+        console.log(io.sockets.adapter.rooms.get(roomId));
+
+        console.log('user2 joined');
+
+        socket.emit('link-joinedPlayer', userInfo);
+        socket.to(roomId).emit('joinedPlayer', userInfo);
     })
 
 
