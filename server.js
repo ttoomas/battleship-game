@@ -28,7 +28,12 @@ io.on('connection', (socket) => {
     let roomId = 1;
 
     socket.on('createRoom', (playerName) => {
-        roomId = new Date().getTime().toString();
+        let dateTime = new Date().getTime().toString();
+        let cutTime = dateTime.match(/.{1,8}/g) ?? [];
+        let nums =  randomNum(0, 9).toString() + randomNum(0, 9).toString();
+        let result = cutTime[cutTime.length - 1] + nums;
+        
+        roomId = result;
         
         rooms[roomId] = {};
         rooms[roomId].roomId = roomId;
@@ -170,6 +175,10 @@ io.on('connection', (socket) => {
 
 
 
+// Helper function to generate random num
+function randomNum(min, max){
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 
 

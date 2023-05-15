@@ -259,7 +259,7 @@ nameJoinBtn.addEventListener('click', () => {
 // Room Id Section
 const roomBtn = document.querySelector('.room__btn');
 
-let roomIdLength = 5; // TODO - CHANGE ID TO ROOM ID LENGTH
+let roomIdLength = 6;
 
 roomBtn.addEventListener('click', () => {
     if(roomIdInput.value.length < roomIdLength){
@@ -270,17 +270,14 @@ roomBtn.addEventListener('click', () => {
 
     roomIdInput.classList.remove('idInputErr');
 
-    // TODO - Check if id is valid
-    if(true){
-        loaderSection.style.display = "none";
+    loaderSection.style.display = "none";
 
-        const data = {
-            userName: nameInput.value,
-            roomId: roomIdInput.value
-        }
-
-        socket.emit('joinPlayer', data);
+    const data = {
+        userName: nameInput.value,
+        roomId: roomIdInput.value
     }
+
+    socket.emit('joinPlayer', data);
 })
 
 
