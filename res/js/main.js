@@ -7,11 +7,11 @@ const refresh = document.querySelector('.refresh');
 const refreshBtn = document.querySelector('.refresh__btn');
 
 window.addEventListener('resize', () => {
-    // refresh.style.display = "flex";
+    refresh.style.display = "flex";
 })
 
 refreshBtn.addEventListener('click', () => {
-    windowlocation.reload();
+    window.location.reload();
 })
 
 // WIN SECTION
@@ -35,6 +35,7 @@ const createSection = document.querySelector('.create');
 const gameSection = document.querySelector('.game');
 const winSection = document.querySelector('.win');
 const loaderSection = document.querySelector('.loader');
+const dissSection = document.querySelector('.diss');
 
 const joinRoomIdText = document.querySelector('.join__roomId');
 const joinCreatorName = document.querySelector('.join .info__bx.infoBxCreator .info__name');
@@ -216,7 +217,12 @@ socket.on('link-joinedPlayer', (data) => {
 
 // Join room input error
 socket.on('joinRoomError', () => {
-    roomIdInput.classList.add('idInputErr');
+    roomSection.classList.add('roomConnectErr');
+})
+
+socket.on('room-deleted', () => {
+    // To all users when the room was deleted
+    dissSection.style.display = "flex";
 })
 
 
@@ -249,12 +255,12 @@ let botName;
 
 botNameBtn.addEventListener('click', () => {
     if(botNameInput.value.length <= 3){
-        botNameInput.classList.add('noName');
+        botNameSection.classList.add('inputErr');
 
         return;
     }
 
-    botNameInput.classList.remove('noName');
+    botNameSection.classList.remove('inputErr');
 
     botName = botNameInput.value;
     gamePlayerName.innerText = botName;
@@ -304,12 +310,13 @@ let roomIdLength = 6;
 
 roomBtn.addEventListener('click', () => {
     if(roomIdInput.value.length < roomIdLength){
-        roomIdInput.classList.add('idInputErr');
+        roomSection.classList.add('roomLengthErr');
 
         return;
     }
 
-    roomIdInput.classList.remove('idInputErr');
+    roomSection.classList.remove('roomLengthErr');
+    roomSection.classList.remove('roomConnectErr');
 
     loaderSection.style.display = "none";
 
@@ -364,12 +371,12 @@ const nameLinkBtn = document.querySelector('.nameLink__btn');
 
 nameLinkBtn.addEventListener('click', () => {
     if(nameLinkInput.value.length <= 3){
-        nameLinkInput.classList.add('noName');
+        linkNameSection.classList.add('inputErr');
 
         return;
     }
 
-    nameLinkInput.classList.remove('noName');
+    linkNameSection.classList.remove('inputErr');
 
     socket.emit('link-joined-send', {userName: nameLinkInput.value});
 })

@@ -27,6 +27,10 @@ app.get('/game/', (req, res) => {
     res.redirect('/');
 })
 
+app.get('*', (req, res) => {
+    res.sendFile(__dirname + '/res/not-found.html');
+})
+
 
 
 // ROOMS
@@ -232,6 +236,10 @@ io.on('connection', (socket) => {
 
     // Disconnect
     socket.on('disconnect', () => {
+        console.log('leaved');
+
+        io.in(roomId).emit('room-deleted');
+
         delete rooms[roomId];
     })
 })

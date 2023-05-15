@@ -25,6 +25,7 @@
         <h1 class="name__title">Enter your name</h1>
         
         <div class="name__bx">
+            <p class="nameError">Name must be longer than 3 characters</p>
             <input type="text" class="name__input" placeholder="Name">
             <div class="name__type">
                 <button class="type__btn typeCreate">Create Room</button>
@@ -37,8 +38,12 @@
         <h1 class="botName__title">Enter you name</h1>
 
         <div class="botName__bx">
-            <input type="text" class="botName__input" placeholder="Your Name">
-            <button class="botName__btn">Play</button>
+            <p class="botNameErrText">Name must be longer than 3 characters</p>
+
+            <div class="botName__inputs">
+                <input type="text" class="botName__input" placeholder="Your Name">
+                <button class="botName__btn">Play</button>
+            </div>
         </div>
     </section>
 
@@ -47,8 +52,12 @@
         <h1 class="nameLink__title">Enter you name</h1>
         
         <div class="nameLink__bx">
-            <input type="text" placeholder="Name" class="nameLink__input">
-            <button class="nameLink__btn">Join</button>
+            <p class="nameLinkErrText">Name must be longer than 3 characters</p>
+
+            <div class="nameLink__inputs">
+                <input type="text" placeholder="Name" class="nameLink__input">
+                <button class="nameLink__btn">Join</button>
+            </div>
         </div>
 
         <h2 class="nameLink__roomText">
@@ -60,10 +69,17 @@
 
     <section class="room">
         <h1 class="room__title">Enter your Room ID</h1>
-
+        
         <div class="room__bx">
-            <input type="number" class="room__input" placeholder="Room ID">
-            <button class="room__btn">Join Room</button>
+            <div class="room__errorBx">
+                <p class="roomErrorText roomLength">Room ID must be at least 6 characters</p>
+                <p class="roomErrorText roomConnect">Wrong Room ID, try it again</p>
+            </div>
+
+            <div class="room__inputs">
+                <input type="number" class="room__input" placeholder="Room ID">
+                <button class="room__btn">Join Room</button>
+            </div>
         </div>
     </section>
 
@@ -408,6 +424,12 @@
         </div>
     </section>
     
+
+    <section class="diss">
+        <h1 class="diss__title">Unfortunately, your teammate has <span class="diss__big">disconnected</span></h1>
+
+        <a href="/" class="diss__button">Play Again!</a>
+    </section>
 
 
     <script src="/socket.io/socket.io.js"></script>

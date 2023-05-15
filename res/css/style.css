@@ -232,12 +232,12 @@ h1, h2, h3, h4, h5, h6, p{
     width: 100%;
     height: 100vh;
     background-color: black;
-    color: white;
+    color: var(--light-navy);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 5;
+    z-index: 500;
 
     display: none;
 }
@@ -245,9 +245,9 @@ h1, h2, h3, h4, h5, h6, p{
     font-size: 72px;
 }
 .refresh__btn{
-    background-color: white;
+    background-color: var(--light-navy);
     color: black;
-    border: 2px solid white;
+    border: 2px solid var(--light-navy);
     outline: none;
     font-size: 28px;
     padding: 12px 30px;
@@ -257,7 +257,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .refresh__btn:hover{
     background-color: black;
-    color: white;
+    color: var(--light-navy);
 }
 
 
@@ -371,14 +371,12 @@ h1, h2, h3, h4, h5, h6, p{
     display: block;
     width: var(--bx-size);
     height: var(--bx-size);
-    /* background-color: var(--light-navy); */
-    background-color: cyan;
+    background-color: var(--light-navy);
+    /* background-color: cyan; */
     border: 1px solid var(--medium-navy);
 
     z-index: 10;
     position: relative;
-
-    /* background-color: transparent; */
 }
 .botShip__cover.disabled{
     background-color: transparent;
@@ -514,7 +512,6 @@ h1, h2, h3, h4, h5, h6, p{
     height: 100vh;
     display: flex;
     flex-direction: column;
-    row-gap: 58px;
     align-items: center;
     justify-content: center;
     background-color: black;
@@ -528,6 +525,25 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .botName__bx,
 .nameLink__bx{
+    display: flex;
+    flex-direction: column;
+}
+.botNameErrText,
+.nameLinkErrText{
+    color: var(--error-red);
+    font-size: 20px;
+    margin-block: 24px 18px;
+    visibility: hidden;
+}
+.nameLinkErrText{
+    margin-top: 28px;
+}
+.botName.inputErr .botNameErrText,
+.nameLink.inputErr .nameLinkErrText{
+    visibility: visible;
+}
+.botName__inputs,
+.nameLink__inputs{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -547,12 +563,12 @@ h1, h2, h3, h4, h5, h6, p{
 .nameLink__input::placeholder{
     color: var(--light-navy);
 }
-.botName__input.noName,
-.nameLink__input.noName{
+.botName.inputErr .botName__input,
+.nameLink.inputErr .nameLink__input{
     border-color: var(--error-red);
 }
-.botName__input.noName::placeholder,
-.nameLink__input.noName::placeholder{
+.botName.inputErr .botName__input::placeholder,
+.nameLink.inputErr .nameLink__input::placeholder{
     color: var(--error-red);
 }
 .botName__btn,
@@ -577,7 +593,7 @@ h1, h2, h3, h4, h5, h6, p{
     row-gap: 0;
 }
 .nameLink__bx{
-    margin-block: 58px 34px;
+    margin-bottom: 34px;
 }
 .nameLink__roomText{
     font-size: 38px;
@@ -600,7 +616,7 @@ h1, h2, h3, h4, h5, h6, p{
     justify-content: center;
     background-color: black;
     color: var(--light-navy);
-    
+
     display: none;
 }
 .join__title{
@@ -880,6 +896,16 @@ h1, h2, h3, h4, h5, h6, p{
     row-gap: 18px;
     margin-block: 52px;
 }
+.nameError{
+    font-size: 20px;
+    color: var(--error-red);
+    margin-top: -16px;
+    margin-bottom: -4px;
+    visibility: hidden;
+}
+.nameError:has(~ .name__input.noName){
+    visibility: visible;
+}
 .name__input{
     width: 100%;
     font-size: 22px;
@@ -972,13 +998,34 @@ h1, h2, h3, h4, h5, h6, p{
 .room__title{
     font-size: 60px;
 }
+.room__errorBx{
+    display: grid;
+}
+.roomErrorText{
+    color: var(--error-red);
+    margin-bottom: 14px;
+    font-size: 20px;
+    visibility: hidden;
+    grid-row: 1;
+    grid-column: 1;
+}
+.room.roomLengthErr .roomErrorText.roomLength{
+    visibility: visible;
+}
+.room.roomConnectErr .roomErrorText.roomConnect{
+    visibility: visible;
+}
 .room__bx{
+    display: flex;
+    flex-direction: column;
+    margin-block: 30px 30px;
+}
+.room__inputs{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     column-gap: 14px;
-    margin-block: 54px;
 }
 .room__input{
     font-size: 22px;
@@ -993,11 +1040,13 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .room__input::placeholder{
     color: var(--light-navy);
-}
-.room__input.idInputErr{
+} 
+.room.roomLengthErr .room__input,
+.room.roomConnectErr .room__input{
     border-color: var(--error-red);
-}
-.room__input.idInputErr::placeholder{
+} 
+.room.roomLengthErr .room__input::placeholder,
+.room.roomConnectErr .room__input::placeholder{
     color: var(--error-red);
 }
 .room__input::-webkit-outer-spin-button,
@@ -1070,4 +1119,89 @@ h1, h2, h3, h4, h5, h6, p{
 .win__btn:hover{
     background-color: black;
     color: var(--light-navy);
+}
+
+
+/* Page Error Section */
+.pageError{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+}
+.pageError__title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 40px;
+    color: var(--light-navy);
+    font-size: 70px;
+}
+.pageError__big{
+    color: var(--error-red);
+    font-size: 160px;
+}
+.pageError__link{
+    font-size: 34px;
+    padding: 20px 64px;
+    color: black;
+    background-color: var(--light-navy);
+    border: 2px solid var(--light-navy);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
+}
+.pageError__link:hover{
+    color: var(--light-navy);
+    background-color: black;
+}
+
+
+/* Diss Section */
+.diss{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 48px;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    color: var(--light-navy);
+    z-index: 9999;
+
+    display: none;
+}
+.diss__title{
+    font-size: 62px;
+    line-height: 1.5;
+    max-width: 900px;
+    text-align: center;
+}
+.diss__big{
+    color: var(--error-red);
+}
+.diss__button{
+    font-size: 30px;
+    padding: 14px 42px;
+    color: black;
+    background-color: var(--light-navy);
+    border: 2px solid var(--light-navy);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
+}
+.dis__button:hover{
+    color: var(--light-navy);
+    background-color: black;
 }
