@@ -6,7 +6,11 @@ import { botPrepare } from "./prepareGame.js";
 const refresh = document.querySelector('.refresh');
 const refreshBtn = document.querySelector('.refresh__btn');
 
+let oldWidth = window.innerWidth;
+
 window.addEventListener('resize', () => {
+    if(window.innerWidth === oldWidth) return;
+
     refresh.style.display = "flex";
 })
 
@@ -175,6 +179,8 @@ socket.on('over-win', (enemyName) => {
     winSection.style.display = "flex";
 
     winTitle.innerText = `Congratulations, you won! Player ${enemyName} unfortunately lost.`;
+
+    socket.emit('gameEnded');
 })
 
 socket.on('over-lose', (enemyName) => {
@@ -182,6 +188,8 @@ socket.on('over-lose', (enemyName) => {
     winSection.style.display = "flex";
 
     winTitle.innerText = `Unfortunately you lost, player ${enemyName} won!`;
+    
+    socket.emit('gameEnded');
 })
 
 
@@ -262,7 +270,7 @@ botNameBtn.addEventListener('click', () => {
 
     botNameSection.classList.remove('inputErr');
 
-    botName = botNameInput.value;
+    botName = botNameInput.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();;
     gamePlayerName.innerText = botName;
     gameTurnName.innerText = botName;
 
@@ -287,7 +295,8 @@ nameCreateBtn.addEventListener('click', () => {
 
     loaderSection.style.display = "flex";
 
-    socket.emit('createRoom', nameInput.value);
+    let playerName = nameInput.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    socket.emit('createRoom', playerName);
 })
 
 nameJoinBtn.addEventListener('click', () => {
@@ -320,8 +329,9 @@ roomBtn.addEventListener('click', () => {
 
     loaderSection.style.display = "none";
 
+    let userName = nameInput.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const data = {
-        userName: nameInput.value,
+        userName: userName,
         roomId: roomIdInput.value
     }
 
@@ -378,5 +388,6 @@ nameLinkBtn.addEventListener('click', () => {
 
     linkNameSection.classList.remove('inputErr');
 
-    socket.emit('link-joined-send', {userName: nameLinkInput.value});
+    let userName = nameLinkInput.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    socket.emit('link-joined-send', {userName: userName});
 })

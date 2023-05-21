@@ -42,6 +42,7 @@ io.on('connection', (socket) => {
 
 
     let roomId = 1;
+    let gameEnded = false;
 
 
     // TODO - reqRoomId !== undefined && reqRoomId !== null && rooms[reqRoomId] && rooms[reqRoomId].players.length < 2
@@ -191,12 +192,16 @@ io.on('connection', (socket) => {
 
         io.to(socket.id).emit('over-win', Object.values(playersClone)[0]);
         socket.to(roomId).emit('over-lose', rooms[roomId].players[socket.id]);
+
+        console.log('yep yep');
+    })
+
+    socket.on('gameEnded', () => {
+        gameEnded = true;
     })
 
 
     socket.on('link-joined-send', (data) => {
-        console.log('haha');
-
         if(
             !rooms[roomId] ||
             Object.keys(rooms[roomId].players).length >= 2
@@ -205,9 +210,6 @@ io.on('connection', (socket) => {
 
             return;
         }
-
-        console.log('ups');
-
 
         const userInfo = {
             roomId: roomId,
@@ -238,7 +240,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('leaved');
 
-        io.in(roomId).emit('room-deleted');
+        if(!gameEnded) io.in(roomId).emit('room-deleted');
 
         delete rooms[roomId];
     })

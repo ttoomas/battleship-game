@@ -463,6 +463,10 @@ h1, h2, h3, h4, h5, h6, p{
     text-decoration-style: wavy;
     text-underline-offset: 12px;
     text-decoration-thickness: 4px;
+
+    display: inline-flex;
+    height: 64px;
+    overflow: hidden;
 }
 
 
