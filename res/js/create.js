@@ -784,6 +784,9 @@ function resetShipPosition(){
     createShips[currentShipIndex].classList.remove('activeSelection');
 
     shipPositions[currentShipIndex].coords = [];
+    shipPositions[currentShipIndex].x = null;
+    shipPositions[currentShipIndex].y = null;
+    shipPositions[currentShipIndex].rotated = null;
 
     // Move with ship back to their original position and reset rotation
     createShips[currentShipIndex].classList.remove('rotatedShip');
