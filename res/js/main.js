@@ -300,7 +300,7 @@ nameCreateBtn.addEventListener('click', () => {
 })
 
 nameJoinBtn.addEventListener('click', () => {
-    if(nameInput.value.length <= 3){
+    if(nameInput.value.length <= 2 || nameInput.value.length > 8){
         nameInput.classList.add('noName');
 
         return;

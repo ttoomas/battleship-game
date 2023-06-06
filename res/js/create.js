@@ -429,11 +429,6 @@ function rotateBorders(){
 
         if(isCollision){
             resetShipPosition();
-
-            fieldContinueBtns.forEach(btn => {
-                btn.classList.remove('fade-in');
-                btn.classList.add('fade-out');
-            })
         }
         else checkBorders();
 
@@ -811,6 +806,11 @@ function resetShipPosition(){
             fill: "forwards"
         }
     )
+
+    fieldContinueBtns.forEach(btn => {
+        btn.classList.remove('fade-in');
+        btn.classList.add('fade-out');
+    })
 }
 
 
