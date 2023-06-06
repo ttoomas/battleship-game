@@ -262,7 +262,7 @@ const botNameBtn = document.querySelector('.botName__btn');
 let botName;
 
 botNameBtn.addEventListener('click', () => {
-    if(botNameInput.value.length <= 3){
+    if(botNameInput.value.length <= 2 || botNameInput.value.length > 8){
         botNameSection.classList.add('inputErr');
 
         return;
@@ -285,7 +285,7 @@ const nameCreateBtn = document.querySelector('.type__btn.typeCreate');
 const nameJoinBtn = document.querySelector('.type__btn.typeJoin');
 
 nameCreateBtn.addEventListener('click', () => {
-    if(nameInput.value.length <= 3){
+    if(nameInput.value.length <= 2 || nameInput.value.length > 8){
         nameInput.classList.add('noName');
 
         return;
@@ -364,6 +364,14 @@ createOnlineBtn.addEventListener('click', () => {
     // let playerShipCoords = [];
     // shipPositions.map(info => info.coords.map(coord => playerShipCoords.push(coord)));
 
+    let isEmpty = false;
+
+    shipPositions.map(info => {if(info.coords.length === 0) isEmpty = true});
+
+    if(isEmpty){
+        return;
+    }
+
     socket.emit('movePlayers-wait', shipPositions);
 })
 
@@ -380,7 +388,7 @@ const nameLinkInput = document.querySelector('.nameLink__input');
 const nameLinkBtn = document.querySelector('.nameLink__btn');
 
 nameLinkBtn.addEventListener('click', () => {
-    if(nameLinkInput.value.length <= 3){
+    if(nameLinkInput.value.length <= 2 || nameLinkInput.value.length > 8){
         linkNameSection.classList.add('inputErr');
 
         return;

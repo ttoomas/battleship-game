@@ -10,6 +10,14 @@ const winSection = document.querySelector('.win');
 const winTitle = document.querySelector('.win__title');
 
 startGameBtn.addEventListener('click', () => {
+    let isEmpty = false;
+
+    shipPositions.map(info => {if(info.coords.length === 0) isEmpty = true});
+
+    if(isEmpty){
+        return;
+    }
+
     console.log('Just started the game');
     console.log(shipPositions);
     console.log('---------------');
