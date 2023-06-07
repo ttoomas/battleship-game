@@ -372,6 +372,8 @@ createOnlineBtn.addEventListener('click', () => {
         return;
     }
 
+    createOnlineBtn.disabled = true;
+
     socket.emit('movePlayers-wait', shipPositions);
 })
 
