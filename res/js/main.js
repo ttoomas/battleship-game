@@ -40,6 +40,7 @@ const gameSection = document.querySelector('.game');
 const winSection = document.querySelector('.win');
 const loaderSection = document.querySelector('.loader');
 const dissSection = document.querySelector('.diss');
+const noRoomSection = document.querySelector('.noRoom');
 
 const joinRoomIdText = document.querySelector('.join__roomId');
 const joinCreatorName = document.querySelector('.join .info__bx.infoBxCreator .info__name');
@@ -222,6 +223,11 @@ socket.on('link-joinedPlayer', (data) => {
     playerId = data.playerId;
 })
 
+// Testos
+socket.on('link-join-room-error', () => {
+    noRoomSection.style.display = "flex";
+})
+
 
 // Join room input error
 socket.on('joinRoomError', () => {
@@ -400,4 +406,12 @@ nameLinkBtn.addEventListener('click', () => {
 
     let userName = nameLinkInput.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     socket.emit('link-joined-send', {userName: userName});
+})
+
+
+// NoRoom Section
+const noRoomBtn = document.querySelector('.noRoom__btn');
+
+noRoomBtn.addEventListener('click', () => {
+    noRoomSection.style.display = "none";
 })

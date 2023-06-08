@@ -45,13 +45,19 @@ io.on('connection', (socket) => {
     let gameEnded = false;
 
 
-    // TODO - reqRoomId !== undefined && reqRoomId !== null && rooms[reqRoomId] && rooms[reqRoomId].players.length < 2
-    if(reqRoomId !== undefined && reqRoomId !== null){
-        io.to(socket.id).emit('link-join-room-init', {roomId: reqRoomId});
+    if(
+        reqRoomId !== undefined && reqRoomId !== null
+    ){
+        if(rooms[reqRoomId] && rooms[reqRoomId].players.length < 2){
+            io.to(socket.id).emit('link-join-room-init', {roomId: reqRoomId});
 
-        roomId = reqRoomId;
+            roomId = reqRoomId;
 
-        reqRoomId = null;
+            reqRoomId = null;
+        }
+        else{
+            io.to(socket.id).emit('link-join-room-error');
+        }
     }
    
 

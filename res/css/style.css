@@ -1204,9 +1204,56 @@ h1, h2, h3, h4, h5, h6, p{
     border: 2px solid var(--light-navy);
     border-radius: 12px;
     text-decoration: none;
+    cursor: pointer;
     transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
 }
 .dis__button:hover{
+    color: var(--light-navy);
+    background-color: black;
+}
+
+
+/* NoRoom Section */
+.noRoom{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 48px;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    color: var(--light-navy);
+    z-index: 9999;
+
+    display: none;
+}
+.noRoom__title{
+    font-size: 62px;
+    line-height: 1.3;
+    max-width: 900px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+.noRoom__id{
+    color: var(--error-red);
+    font-size: 82px;
+}
+.noRoom__btn{
+    font-size: 30px;
+    padding: 14px 42px;
+    color: black;
+    background-color: var(--light-navy);
+    border: 2px solid var(--light-navy);
+    border-radius: 12px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
+}
+.noRoom__btn:hover{
     color: var(--light-navy);
     background-color: black;
 }
