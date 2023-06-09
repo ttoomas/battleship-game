@@ -16,7 +16,7 @@ let reqRoomId = null;
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/res/game.html');
- // if(currentRoom === undefined || currentRoom === null || currentRoom.players.length >= 2) return;
+    // if(currentRoom === undefined || currentRoom === null || currentRoom.players.length >= 2) return;
 })
 
 app.get('/game/', (req, res) => {
@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
     if(
         reqRoomId !== undefined && reqRoomId !== null
     ){
-        if(rooms[reqRoomId] && rooms[reqRoomId].players.length < 2){
+        if(rooms[reqRoomId] && Object.keys(rooms[reqRoomId].players).length < 2){
             io.to(socket.id).emit('link-join-room-init', {roomId: reqRoomId});
 
             roomId = reqRoomId;
@@ -59,6 +59,8 @@ io.on('connection', (socket) => {
             io.to(socket.id).emit('link-join-room-error');
         }
     }
+
+    reqRoomId = null;
    
 
     socket.on('createRoom', (playerName) => {
